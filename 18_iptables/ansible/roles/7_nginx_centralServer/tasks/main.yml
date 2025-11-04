@@ -1,0 +1,21 @@
+---
+#Добавление nginx репозитория
+- name: copy
+  ansible.builtin.copy:
+    src: "files/nginx.repo"
+    dest: "/etc/yum.repos.d/nginx.repo"
+    owner: root
+    group: root
+    mode: "755"
+
+# Установка nginx
+- name: Install nginx
+  yum:
+    name:
+      - nginx
+    state: present
+    update_cache: true
+  become: true
+
+  notify:
+    - nginx_service

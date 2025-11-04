@@ -1,0 +1,34 @@
+---
+# Создание ssh ключей на centralRouter
+- name: initialization rsa key
+  community.crypto.openssh_keypair:
+    path: /home/vagrant/.ssh/id_rsa
+    force: True
+  when: ansible_hostname == "centralRouter"
+
+- name: chown for .ssh
+  ansible.builtin.command:
+  args:
+    cmd: chown -R vagrant:vagrant /home/vagrant/.ssh
+  when: ansible_hostname == "centralRouter"
+
+#Сохранение вывода команды cat (id_rsa.pub) в переменную
+- name: register rsa key
+  ansible.builtin.command:
+  args:
+    cmd: cat /home/vagrant/.ssh/id_rsa.pub
+  register: master_public_key
+  become: true
+  delegate_to: centralRouter
+  run_once: true
+
+# Помещение значения переменной master_public_key
+# (id_rsa.pub) в файл .ssh/authorized_key
+# на inetRouter
+- name: add rsa.pub on inetRouter
+  ansible.posix.authorized_key:
+    user: vagrant
+    state: present
+    key: "{{ hostvars['centralRouter']['master_public_key']['stdout'] }}"
+  become: true
+  when: ansible_hostname == "inetRouter"

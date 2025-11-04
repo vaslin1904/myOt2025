@@ -1,0 +1,72 @@
+---
+#Изменение репозитория для Centos7
+#Установка дополнительных пакетов tracerouter, iptables-utils на все хосты
+- name: extra_install
+  hosts: all
+  gather_facts: false
+  become: True
+
+  roles:
+  - 1_extra_install
+
+#Настройки Routers
+#Включение функции пересылки транзитных пакетов через интерфесы роутеров
+- name: set Routers
+  hosts: routers
+  gather_facts: false
+  become: True
+
+  roles:
+  - 2_enable_forwarding
+
+#Настройки iptables_rules
+- name: set iptables
+  hosts: all
+  gather_facts: True
+  become: True
+
+  roles:
+  - 3_iptables_conf
+#Установка маршрутов пересылки пакетов
+- name: set_route
+  hosts: all
+  gather_facts: True
+  become: True
+
+  roles:
+  - 4_set_route
+
+
+#**********************************************#
+# Задание 1.  centralRouter подключается по SSH
+# к inetRouter через knock порты
+
+#./knockscript.sh 192.168.255.1 8881 7777 9991
+#ssh -vvv 192.168.255.1
+
+# Создание и проброс ssh ключей между central и inetRouter
+- name: autorization ssh
+  hosts: server_route
+  gather_facts: True
+  become: True
+
+  roles:
+  - 5_autorization
+
+#Копирование knockscript
+- name: Setting knock SSH
+  hosts: centralRouter
+  gather_facts: false
+  become: True
+
+  roles:
+  - 6_knockscript_centralRouter
+
+# Задание 2.
+- name: install nginx
+  hosts: centralServer
+  gather_facts: false
+  become: True
+
+  roles:
+  - 7_nginx_centralServer

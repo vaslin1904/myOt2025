@@ -1,0 +1,30 @@
+---
+# Изменение репозитория для Centos 7
+- name: copy
+  ansible.builtin.copy:
+    src: "files/CentOS-Base.repo"
+    dest: "/etc/yum.repos.d/CentOS-Base.repo"
+    owner: root
+    group: root
+    mode: "755"
+#Установка пакета iptables-utils, traceroute на сервера
+- name: Install traceroute
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  become: true
+  with_list:
+    - iptables-services
+    - traceroute
+    - iptables-utils
+
+  # Установка пакета nmap
+- name: Install nmap
+  yum:
+    name:
+      - nmap
+    state: present
+    update_cache: true
+  become: true
+  delegate_to: centralRouter

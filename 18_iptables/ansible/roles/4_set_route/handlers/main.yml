@@ -1,0 +1,7 @@
+---
+- name: network_service
+  ansible.builtin.service:
+    name: network
+    state: restarted
+    enabled: yes
+  delegate_to: inetRouter

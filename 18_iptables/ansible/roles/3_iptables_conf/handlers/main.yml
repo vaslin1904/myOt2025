@@ -1,0 +1,20 @@
+---
+#module handlers
+#Выключение firewalld
+- name: firewalld_stopped
+  ansible.builtin.service:
+    name: firewalld
+    state: stopped
+    enabled: no
+#Перезапускаем iptables и включаем автозапуск
+- name: iptables_service
+  ansible.builtin.service:
+    name: iptables
+    state: started
+    enabled: yes
+
+- name: auto_ipt
+  ansible.builtin.service:
+    name: auto_ipt
+    state: started
+    enabled: yes

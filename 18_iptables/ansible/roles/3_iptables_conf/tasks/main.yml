@@ -1,0 +1,63 @@
+---
+- name: Create directory /etc/network/
+  ansible.builtin.file:
+    path: /etc/network/sysconfig
+    state: directory
+    mode: '0755'
+
+#Копирование файла настройки NAT, FILTER,
+- name: copy iptables config inetRouter
+  ansible.builtin.copy:
+    src: "files/etc/iptables_rul_inetRouter.ipv4"
+    dest: "{{ way }}"
+    owner: root
+    group: root
+    mode: "{{ mode_rul }}"
+  when: ansible_hostname == "inetRouter"
+
+- name: copy iptables config centralRouter
+  ansible.builtin.copy:
+    src: "files/etc/iptables_standart.ipv4"
+    dest: "{{ way }}"
+    owner: root
+    group: root
+    mode: "{{ mode_rul }}"
+  when: ansible_hostname == "centralRouter"
+
+- name: copy iptables config inetRouter2
+  ansible.builtin.copy:
+    src: "files/etc/iptables_InetRoute2.ipv4"
+    dest: "{{ way }}"
+    owner: root
+    group: root
+    mode: "{{ mode_rul }}"
+  when: ansible_hostname == "inetRouter2"
+  tags: inetR2
+
+#Проброс порта 80 на 8080 inetRouter2
+
+- name: copy iptables config centralServer
+  ansible.builtin.copy:
+    src: "files/etc/iptables_standart.ipv4"
+    dest: "{{ way }}"
+    owner: root
+    group: root
+    mode: "{{ mode_rul }}"
+  when: ansible_hostname == "centralServer"
+
+
+#отключение firewalld, перезапуск
+#и включение в автозагрузку iptables_service
+#добавляется сервис автоматического восстановления правил при перезапуске системы
+- name: copy iptables config
+  ansible.builtin.copy:
+    src: "files/etc/network/auto_ipt.service"
+    dest: "/etc/systemd/system/auto_ipt.service"
+    owner: root
+    group: root
+    mode: "0755"
+
+  notify:
+    - firewalld_stopped
+    - iptables_service
+    - auto_ipt
