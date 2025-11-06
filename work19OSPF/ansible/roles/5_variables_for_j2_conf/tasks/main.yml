@@ -1,0 +1,13 @@
+---
+#Регистрация переменной со значением версии установленного пакета frr
+- name: register variable version_frr
+  ansible.builtin.command:
+  args:
+    cmd: dpkg -l | grep frr | awk '{print $3}'
+  register: version_frr
+
+- name: register variable version_frr
+  ansible.builtin.command:
+  args:
+    cmd: dpkg -l | grep frr | awk '{print $3}'
+  register: description_enp0s8

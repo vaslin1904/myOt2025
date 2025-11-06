@@ -1,0 +1,7 @@
+---
+- name: restart_frr
+  ansible.builtin.service:
+    name: frr
+    state: restarted
+    enabled: yes
+  

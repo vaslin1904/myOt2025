@@ -1,0 +1,13 @@
+---
+#Установка пакета traceroute на сервера с ubuntu
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  become: true
+  loop:
+    - traceroute
+    - net-tools
+    - tcpdump
+    - vim

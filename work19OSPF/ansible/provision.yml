@@ -1,0 +1,55 @@
+---
+#Установка дополнительных пакетов все хосты
+- name: dop_install
+  hosts: all
+  gather_facts: false
+  become: True
+
+  roles:
+  - 1_dop_install
+
+#Включение forward
+- name: enable forwarding
+  hosts: all
+  gather_facts: false
+  become: True
+
+  roles:
+  - 2_enable_forwarding
+
+#Отключение файерволл
+- name: set_ufw
+  hosts: all
+  gather_facts: false
+  become: True
+
+  roles:
+  - 3_set_ufw_off
+
+#Установка и настройка пакета frr на базе Quagga
+- name: install_frr
+  hosts: all
+  gather_facts: True
+  become: True
+
+  roles:
+  - 4_install_frr
+#настройка frr.conf.j2
+# - name: variables_for_j2_conf
+#   hosts: all
+#   gather_facts: True
+#   become: True
+#
+#   roles:
+#   - 5_variables_for_j2_conf
+#   tags: setup_ospf
+#Настройка OSPF
+
+- name: set OSPF
+  hosts: all
+  gather_facts: True
+  become: True
+
+  roles:
+  - 6_set_OSPF
+  tags: setup_ospf

@@ -1,0 +1,84 @@
+!Указание версии FRR
+frr version 10.4.1-0
+frr defaults traditional
+!Указываем имя машины
+hostname {{ ansible_hostname }}
+log syslog informational
+no ipv6 forwarding
+service integrated-vtysh-config
+!
+!Добавляем информацию об интерфейсе enp0s8
+interface enp0s8
+  description {{ interface_description_8 }}
+  ip address {{ interface_ip_8 }}/30
+!Указываем параметр игнорирования MTU
+ ip ospf mtu-ignore
+ !Указываем параметры hello-интервала для OSPF пакетов
+  ip ospf hello-interval 10
+ !Указываем параметры dead-интервала для OSPF пакетов
+ !Должно быть кратно предыдущему значению
+  ip ospf dead-interval 30
+!Если потребуется, можно указать «стоимость» интерфейса
+ {% if ansible_hostname == 'router1' %}
+ ip ospf cost 1000
+ {% elif ansible_hostname == 'router2' and symmetric_routing == true %}
+ ip ospf cost 1000
+ {% else %}
+ !ip ospf cost 450
+ {% endif %}
+!
+interface enp0s9
+ description {{ interface_description_9 }}
+ ip address {{ interface_ip_9 }}/30
+ ip ospf mtu-ignore
+ !ip ospf cost 45
+ ip ospf hello-interval 10
+ ip ospf dead-interval 30
+ {% if ansible_hostname == 'router1' %}
+ ip ospf cost 1000
+ {% elif ansible_hostname == 'router2' and symmetric_routing == true %}
+ ip ospf cost 1000
+ {% else %}
+ !ip ospf cost 450
+ {% endif %}
+!
+interface enp0s10
+ description {{ interface_description_10 }}
+ ip address {{ interface_ip_10 }}/30
+ ip ospf mtu-ignore
+!ip ospf cost 45
+ ip ospf hello-interval 10
+ ip ospf dead-interval 30
+ {% if ansible_hostname == 'router1' %}
+ ip ospf cost 1000
+ {% elif ansible_hostname == 'router2' and symmetric_routing == true %}
+ ip ospf cost 1000
+ {% else %}
+ !ip ospf cost 450
+ {% endif %}
+!
+!Начало настройки OSPF
+router ospf
+!Указываем router-id
+ {% if router_id_enable == false %}!{% endif %}router-id {{ router_id }}
+ {% if router_id == '1.1.1.1' %}
+  !Указываем сети, которые хотим анонсировать соседним роутерам
+ network 10.0.10.0/30 area 0
+ network 10.0.12.0/30 area 0
+ network 192.168.10.0/24 area 0
+ {% elif router_id == '2.2.2.2' %}
+ network 10.0.10.0/30 area 0
+ network 10.0.11.0/30 area 0
+ network 192.168.20.0/24 area 0
+!Указываем адреса соседних роутеров
+ {% else %}
+ network 10.0.12.0/30 area 0
+ network 10.0.11.0/30 area 0
+ network 192.168.30.0/24 area 0
+!Указываем адреса соседних роутеров
+ {% endif %}
+!
+!Указываем адрес log-файла
+log file /var/log/frr/frr.log
+default-information originate always
+!

@@ -1,0 +1,20 @@
+---
+# Добавление измененнного файла с включенными протоколами /etc/frr/daemons
+- name: change daemons and enable protocols
+  template:
+      src: template/daemons
+      dest: /etc/frr/daemons
+      owner: frr
+      group: frr
+      mode: 0640
+#Добавление файла с настройками ospf
+- name: set up ospf
+  template:
+      src: template/frr.conf.j2
+      dest: /etc/frr/frr.conf
+      owner: frr
+      group: frr
+      mode: 0640
+
+  notify:
+    - restart_frr
