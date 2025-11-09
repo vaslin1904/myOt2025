@@ -1,0 +1,13 @@
+---
+- name: Check if SELinux is enabled
+  command: getenforce
+  register: selinux_status
+  changed_when: false
+  ignore_errors: yes
+
+- name: Temporarily disable SELinux if enabled
+  command: setenforce 0
+  when:
+    - selinux_status.rc == 0
+    - selinux_status.stdout != "Disabled"
+    - selinux_status.stdout != "Permissive"

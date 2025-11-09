@@ -1,0 +1,12 @@
+---
+#Add configure openvpn
+- name: add configure file
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+      - {src: "template/client.conf.j2", dest: "/etc/openvpn/client.conf"}
+      - {src: "template/openvpn@.service", dest: "/etc/systemd/system/openvpn@.service"}
+
+  notify:
+    - openvpn_service

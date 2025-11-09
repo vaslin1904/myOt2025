@@ -1,0 +1,52 @@
+MACHINES = {
+  :server => {
+        :box_name => "ubuntu/jammy64",
+        :vm_name => "server",
+        :net => [ #ip, adpter, netmask, virtualbox__intnet
+                    ["192.168.56.3", 2, "255.255.255.0"],
+                ]
+    },
+
+  :client=> {
+        :box_name => "ubuntu/jammy64",
+        :vm_name => "client",
+        :net => [
+                  ["192.168.56.4",  2, "255.255.255.0"],
+                ]
+    },
+
+}
+
+Vagrant.configure("2") do |config|
+  MACHINES.each do |boxname, boxconfig|
+
+    config.vm.define boxname do |box|
+      box.vm.box = boxconfig[:box_name]
+      box.vm.host_name = boxconfig[:vm_name]
+
+      box.vm.provider "virtualbox" do |v|
+        v.memory = 768
+        v.cpus = 1
+       end
+      if boxconfig[:vm_name] == "client.loc"
+        box.vm.provision "ansible" do |ansible|
+         ansible.playbook = "ansible/provision.yml"
+         ansible.inventory_path = "ansible/hosts"
+         ansible.host_key_checking = "false"
+         ansible.limit = "all"
+       end
+      end
+      boxconfig[:net].each do |ipconf|
+        box.vm.network("private_network", ip: ipconf[0], adapter: ipconf[1], netmask: ipconf[2], virtualbox__intnet: ipconf[3])
+      end
+
+      if boxconfig.key?(:public)
+        box.vm.network "public_network", boxconfig[:public]
+      end
+        box.vm.synced_folder ".", "/vagrant", disabled: true
+
+    end
+
+
+  end
+end

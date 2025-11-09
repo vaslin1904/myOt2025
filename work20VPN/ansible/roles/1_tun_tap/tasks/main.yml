@@ -1,0 +1,17 @@
+---
+- name: 0_autorization
+  include_tasks: 0_autorization.yml
+
+- name: 1_dop_install
+  include_tasks: 1_dop_install.yml
+
+- name: 2_disable_selinux
+  include_tasks: 2_disable_selinux.yml
+
+- name: set openvpn for server
+  include_tasks: 3_set_server.yml
+  when: ansible_hostname == "server"
+
+- name: set openvpn for client
+  include_tasks: 4_set_client.yml
+  when: ansible_hostname == "client"

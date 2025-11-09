@@ -1,0 +1,17 @@
+---
+# - name: set tun/tap
+#   hosts: all
+#   become: True
+#
+#   roles:
+#   - 1_tun_tap
+
+- name: RAS на базе OpenVPN
+  hosts: rsavpn
+  gather_facts: True
+  become: True
+
+  # become: True
+
+  roles:
+  - 2_RAS

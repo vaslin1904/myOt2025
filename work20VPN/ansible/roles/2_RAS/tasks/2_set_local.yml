@@ -1,0 +1,4 @@
+- name: set configure client
+  template:
+    src: "template/client.conf"
+    dest: "/etc/openvpn/client.conf"

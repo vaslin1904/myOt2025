@@ -1,0 +1,29 @@
+---
+- name: dop_install
+  include_tasks: 1_dop_install.yml
+
+- name: configure server
+  when: inventory_hostname == "server"
+  block:
+
+    - name: 2_disable_selinux
+      include_tasks: 2_disable_selinux.yml
+
+    - name: init_PKI
+      include_tasks: 3_init_PKI.yml
+
+    - name: generation_keys
+      include_tasks: 4_generation.yml
+
+    - name: 4_copy_files
+      include_tasks: 4_copy_files.yml
+      tags: copy_f
+
+    - name: 5_dop_set_server
+      include_tasks: 5_dop_set_server.yml
+
+
+
+- name: set_local
+  include_tasks: 2_set_local.yml
+  when: inventory_hostname == "localhost"

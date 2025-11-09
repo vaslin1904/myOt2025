@@ -1,0 +1,62 @@
+---
+- name: Check if server certificate already exists
+  stat:
+    path: /etc/openvpn/pki/private/server.key
+  register: server_cert
+
+- name: Generate and sign server certificate
+  command:
+    cmd: "/usr/share/easy-rsa/easyrsa gen-req server nopass"
+    chdir: /etc/openvpn
+  args:
+    stdin: "rasvpn\n"
+  ignore_errors: true
+  when: not server_cert.stat.exists
+
+- name: Check2 if server certificate already exists
+  stat:
+    path: /etc/openvpn/pki/issued/server.crt
+  register: server_cert
+
+- name: Generate2 and sign server certificate
+  command:
+    cmd: "/usr/share/easy-rsa/easyrsa sign-req server server"
+  args:
+    stdin: "yes\n"
+    chdir: /etc/openvpn
+  ignore_errors: true
+  when: not server_cert.stat.exists
+
+- name: Generate and sign client certificate
+  command:
+    cmd: "/usr/share/easy-rsa/easyrsa build-client-full client nopass"
+    chdir: /etc/openvpn
+  environment:
+    EASYRSA_BATCH: "1"
+  ignore_errors: true
+
+- name: Check4 if server certificate already exists
+  stat:
+    path: /etc/openvpn/pki/dh.pem
+  register: dh_cert
+
+
+- name: certificate *-dh
+  command:
+    cmd: "/usr/share/easy-rsa/easyrsa gen-dh"
+  args:
+    chdir: /etc/openvpn
+  ignore_errors: true
+  when: not dh_cert.stat.exists
+
+- name: Check5 if server certificate already exists
+  stat:
+    path: /etc/openvpn/secret.key
+  register: server_cert
+
+- name: certificate static_key
+  command:
+    cmd: "openvpn --genkey secret ca.key"
+  args:
+    chdir: /etc/openvpn
+  when: not server_cert.stat.exists

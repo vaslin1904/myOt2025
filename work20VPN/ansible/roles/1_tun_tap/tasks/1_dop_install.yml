@@ -1,0 +1,18 @@
+---
+#Установка пакета
+- name: set hwclock
+  ansible.builtin.command:
+  args:
+    cmd: sudo hwclock --hctosys
+  become: true
+
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  become: true
+  loop:
+    - openvpn
+    - iperf3
+    - selinux-utils

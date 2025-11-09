@@ -1,0 +1,7 @@
+---
+#module handlers
+- name: openvpn_service
+  ansible.builtin.service:
+    name: openvpn@{{ ansible_hostname }}
+    state: started
+    enabled: yes

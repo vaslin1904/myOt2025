@@ -1,0 +1,33 @@
+---
+- name: add key openvpn
+  ansible.builtin.command:
+  args:
+    cmd: openvpn --genkey secret /etc/openvpn/static.key
+    creates: /etc/openvpn/static.key
+  become: true
+
+- name: Read File into variable on server
+  ansible.builtin.slurp:
+    src: "/etc/openvpn/static.key"
+  register: static_slurp
+
+- name: Write File from variable on client
+  ansible.builtin.copy:
+    dest: "/etc/openvpn/{{ static_slurp.source | basename }}"
+    content: "{{ static_slurp.content | b64decode }}"
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  delegate_to: "client"
+  tags: copy_f
+#Add configure openvpn
+- name: add configure file
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+      - { src: "template/server.conf.j2", dest: "/etc/openvpn/server.conf" }
+      - { src: "template/openvpn@.service", dest: "/etc/systemd/system/openvpn@.service" }
+
+  notify:
+    - openvpn_service

@@ -1,0 +1,60 @@
+---
+- name: Fix permissions on remote OpenVPN files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: '0644'
+    owner: root
+    group: root
+  become: true
+  loop:
+    - /etc/openvpn/pki/ca.crt
+    - /etc/openvpn/pki/issued/client.crt
+    - /etc/openvpn/pki/private/client.key
+
+- name: copy keys
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/tmp/"
+    remote_src: true
+  become: true
+  loop:
+    - /etc/openvpn/pki/ca.crt
+    - /etc/openvpn/pki/issued/client.crt
+    - /etc/openvpn/pki/private/client.key
+
+
+- name: copy2 keys
+  ansible.builtin.fetch:
+    src: "/tmp/{{ item }}"
+    dest: "/tmp/"
+    flat: true
+  loop:
+    - ca.crt
+    - client.crt
+    - client.key
+
+- name: copy3 keys
+  ansible.builtin.copy:
+    src: "/tmp/{{ item }}"
+    dest: "/etc/openvpn/"
+    mode: '0600'
+    owner: root
+    group: root
+  delegate_to: localhost
+  become: True
+  loop:
+    - ca.crt
+    - client.crt
+    - client.key
+
+- name: Fix2 permissions on remote OpenVPN files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: '0600'
+    owner: root
+    group: root
+  become: true
+  loop:
+    - /etc/openvpn/pki/ca.crt
+    - /etc/openvpn/pki/issued/client.crt
+    - /etc/openvpn/pki/private/client.key

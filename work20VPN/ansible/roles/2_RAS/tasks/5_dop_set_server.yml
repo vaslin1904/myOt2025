@@ -1,0 +1,14 @@
+---
+- name: add configure file
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: "template/server.conf", dest: "/etc/openvpn/server.conf" }
+    - { src: "template/openvpn@.service", dest: "/etc/systemd/system/openvpn@.service" }
+
+- name: set iroute
+  command: "echo 'iroute 10.10.10.0 255.255.255.0' > /etc/openvpn/client/client"
+
+  notify:
+    - start_openvpn
