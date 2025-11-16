@@ -1,4 +1,7 @@
 ---
+# Значение переменных vars:
+#     way: "/etc/iptables_rules.ipv4"
+#     mode_rul: "0644"
 # Создание директории для хранения конфигов
 - name: Create directory /etc/network/
   ansible.builtin.file:
@@ -62,4 +65,5 @@
     - firewalld_stopped
     - iptables_service
     - auto_ipt
+
 
