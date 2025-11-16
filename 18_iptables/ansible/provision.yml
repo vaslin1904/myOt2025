@@ -61,8 +61,8 @@
 
   roles:
   - 6_knockscript_centralRouter
-
-# Задание 2.
+#*************************************************#
+# Задание 2. Запустить nginx на centralServer
 - name: install nginx
   hosts: centralServer
   gather_facts: false
@@ -70,3 +70,4 @@
 
   roles:
   - 7_nginx_centralServer
+
