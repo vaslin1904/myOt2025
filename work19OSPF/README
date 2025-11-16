@@ -13,4 +13,16 @@ _______________________________________________________________________
 - включаем forwarding
 - в файле /etc/frr/daemons включаем протокол ospf = yes.
 - выполняются настройки ospf через файл /etc/frr/frr.conf
-
+  !Указываются сети, которые анонсиуются соседним роутерам (Пример router1)
+ network 10.0.10.0/30 area 0
+ network 10.0.12.0/30 area 0
+ network 192.168.10.0/24 area 0
+!Указываем адреса соседних роутеров
+ network 10.0.12.0/30 area 0
+ network 10.0.11.0/30 area 0
+ network 192.168.30.0/24 area 0
+!
+!Указываем адрес log-файла
+log file /var/log/frr/frr.log
+default-information originate always
+!
