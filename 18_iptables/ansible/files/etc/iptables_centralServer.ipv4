@@ -2,6 +2,7 @@
 :PREROUTING ACCEPT [0:0]
 :INPUT ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
+# Пакеты, пришедшие с порта 8080 направлять на порт 80
 -A PREROUTING -p tcp --dport 8080 -j REDIRECT --to-port 80
 COMMIT
 *filter
