@@ -3,6 +3,7 @@
 :INPUT ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
+# Для Пакетов, пришедших с внутренней сети, менять ip
 -A POSTROUTING ! -d 192.168.0.0/16 -o eth0 -j MASQUERADE
 COMMIT
 *filter
@@ -21,6 +22,7 @@ COMMIT
 -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -i eth0 -o eth1 -m state --state INVALID -j DROP
 #Разрешить трафик для ssh от inetRouter2
+# Создание цепочки Traffic в таблице INPUT
 -A INPUT -s 192.168.255.2 -j TRAFFIC
 -A TRAFFIC -p icmp --icmp-type any -j ACCEPT
 -A TRAFFIC -m state --state ESTABLISHED,RELATED -j ACCEPT
