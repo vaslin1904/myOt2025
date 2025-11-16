@@ -54,3 +54,6 @@ ________________________________________________________________________________
 *\# Исходящие пакеты с порта 8080 inetRouter2 направляются на порт 80 centralRouter* </br>
 -A OUTPUT -p tcp -d 192.168.2.2 --dport 8080 -j DNAT --to-destination 192.168.2.3:80
 3. 
+4. # Настройка (разрешение) перенаправления пакетов через inetRouter
+-A FORWARD -d 192.168.2.3 -p tcp -m multiport --dports 80,8080 -j ACCEPT
+-A FORWARD -s 192.168.2.3 -p tcp --sport 80 -j ACCEPT
