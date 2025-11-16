@@ -34,16 +34,6 @@
 
   roles:
   - 4_install_frr
-#настройка frr.conf.j2
-# - name: variables_for_j2_conf
-#   hosts: all
-#   gather_facts: True
-#   become: True
-#
-#   roles:
-#   - 5_variables_for_j2_conf
-#   tags: setup_ospf
-#Настройка OSPF
 
 - name: set OSPF
   hosts: all
@@ -53,3 +43,4 @@
   roles:
   - 6_set_OSPF
   tags: setup_ospf
+
