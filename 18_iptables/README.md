@@ -62,4 +62,4 @@ ________________________________________________________________________________
 Для настройки интернет в схеме через Internet Router:
 - прописывание статических маршрутов
 - добавление в iptables (NAT) inetRouter строку с MASQUERADE: -A POSTROUTING ! -d 192.168.0.0/16 -o eth0 -j MASQUERADE
-- включение forwarding для inetRouter, inetRouter2: 
+- включение forwarding для inetRouter, inetRouter2: net.ipv4.conf.all.forwarding = 1
