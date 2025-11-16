@@ -1,5 +1,5 @@
 ---
-# Изменение репозитория для Centos 7
+# Изменение репозитория на актуальный для Centos 7
 - name: copy
   ansible.builtin.copy:
     src: "files/CentOS-Base.repo"
@@ -19,7 +19,7 @@
     - traceroute
     - iptables-utils
 
-  # Установка пакета nmap
+  # Установка пакета nmap для centralRouter
 - name: Install nmap
   yum:
     name:
@@ -28,3 +28,4 @@
     update_cache: true
   become: true
   delegate_to: centralRouter
+
