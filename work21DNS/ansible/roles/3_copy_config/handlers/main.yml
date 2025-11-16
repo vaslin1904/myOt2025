@@ -1,0 +1,7 @@
+---
+#module handlers
+- name: start_named
+  ansible.builtin.service:
+    name: named.service
+    state: restarted
+    enabled: yes

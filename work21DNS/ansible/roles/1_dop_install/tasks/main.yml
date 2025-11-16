@@ -1,0 +1,21 @@
+---
+- name: copy
+  ansible.builtin.copy:
+    src: "template/CentOS-Base.repo"
+    dest: "/etc/yum.repos.d/CentOS-Base.repo"
+    owner: root
+    group: root
+    mode: "755"
+
+#Установка пакета traceroute на сервера с ubuntu
+- name: Install packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  become: true
+  loop:
+    - bind
+    - bind-utils
+    #- ntp
+    - vim

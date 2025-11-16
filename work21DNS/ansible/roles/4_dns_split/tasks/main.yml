@@ -1,0 +1,24 @@
+---
+- name: set dns_split
+  when: named_split
+  block:
+    - name: set config-split ns02
+      when: ansible_hostname == "ns02"
+      template:
+        src: "template/ns02/slave-named_split.conf"
+        dest: "/etc/named.conf"
+        owner: root
+        group: named
+        mode: 0640
+
+    - name: set config ns01 named, resolv
+      when: ansible_hostname == "ns01"
+      template:
+        src: "template/ns01/master-named_split.conf"
+        dest: "/etc/named.conf"
+        owner: root
+        group: named
+        mode: 0640
+
+  notify:
+    - start_named

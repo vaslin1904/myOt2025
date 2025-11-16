@@ -1,0 +1,17 @@
+---
+#Остановка chronyd
+- name: stop default chronyd
+  ansible.builtin.service:
+    name: chronyd
+    state: stoped
+    enabled: false
+  become: true
+  register: stop_chronyd
+
+#Настройка ntp
+- name: start time_ntp
+  ansible.builtin.service:
+    name: ntp
+    state: started
+    enabled: true
+  become: true

@@ -1,0 +1,36 @@
+---
+#Установка дополнительных пакетов все хосты
+- name: dop_install
+  hosts: all
+  gather_facts: true
+  become: True
+
+  roles:
+  - 1_dop_install
+
+# ##Настройка времени через ntp
+# - name: 2_set time_ntp
+#   hosts: all
+#   gather_facts: false
+#   become: True
+#
+#   roles:
+#   - 2_set time_ntp
+
+- name: copy configs
+  hosts: all
+  gather_facts: true
+  become: True
+
+  roles:
+  - 3_copy_config
+  tags: copy_conf
+
+- name: copy configs-split
+  hosts: servers
+  gather_facts: true
+  become: True
+
+  roles:
+  - 4_dns_split
+  tags: copy_conf_split

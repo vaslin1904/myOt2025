@@ -1,0 +1,78 @@
+---
+#Копирование ключа
+- name: set zonetransfer key
+  template:
+    src: template/named.zonetransfer.key
+    dest: /etc/named.zonetransfer.key
+    owner: root
+    group: named
+    mode: 0644
+
+- name: set resolv. conf
+  template:
+    src: template/servers-resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: named
+    mode: 0644
+
+- name: set /etc/named permissions
+  ansible.builtin.file:
+    path: "/etc/named"
+    owner: named
+    group: named
+    mode: 0775
+    state: directory
+
+
+- name: set config ns01
+  when: ansible_hostname == "ns01"
+  block:
+    - name: set config ns01 named, resolv
+      template:
+        src: "template/ns01/{{item.src}}"
+        dest: "/etc/{{item.dest}}"
+        owner: root
+        group: named
+        mode: "{{item.mode}}"
+      loop:
+        - {src: "master-named.conf", dest: "named.conf", mode: "0640" }
+
+
+    - name: set config ns01 dns lab
+      template:
+        src: "template/ns01/{{ item }}"
+        dest: "/etc/named/"
+        owner: root
+        group: named
+        mode: "0660"
+      loop:
+        - named.ddns.lab
+        - named.dns.lab.rev
+        - named.dns.lab
+        - named.newdns.lab
+        - named.dns.lab.client
+
+- name: set config ns02
+  when: ansible_hostname == "ns02"
+  template:
+    src: "template/ns02/slave-named.conf"
+    dest: "/etc/named.conf"
+    owner: root
+    group: named
+    mode: 0640
+
+- name: set config clients
+  when: groups == "clients"
+  template:
+    src: "template/clients/{{items.src}}"
+    dest: "{{item.dest}}"
+    owner: "{{item.owner}}"
+    group: "{{item.group}}"
+    mode: 0644
+  loop:
+#    -  {src: "client-resolv.conf", dest: "/etc/resolv.conf", owner: root, group: root }
+    -  {src: "rndc.conf", dest: "/home/vagrant/rndc.conf", owner: vagrant, group: vagrant }
+    -  {src: "client-motd", dest: "/etc/motd", owner: root, group: root }
+  notify:
+    - start_named

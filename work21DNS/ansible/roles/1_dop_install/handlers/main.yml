@@ -1,0 +1,7 @@
+---
+#module handlers
+- name: update_cash
+  ansible.builtin.dnf:
+    update_cache: true
+    clean: all
+    state: present
