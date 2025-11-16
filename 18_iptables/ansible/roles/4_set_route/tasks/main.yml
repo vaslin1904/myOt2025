@@ -1,14 +1,14 @@
 ---
 # Добавление настройки DEFROUTE=no в конфиг интерфейса eth0 (отключение машрута по умолчанию)
 # echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0
+# для группы [defroute_off]: centralRouter, inetRouter2, centralServer
 - name: disable default route
   ansible.builtin.command:
   args:
     cmd: "ip route del default"
   become: True
   when: inventory_hostname in groups["defroute_off"]
-
-
+# Изменение маршрута по умолчанию для группы 
 - name: change default route
   ansible.builtin.command:
   args:
@@ -42,3 +42,4 @@
   delegate_to: inetRouter
 
   notify: network_service
+
