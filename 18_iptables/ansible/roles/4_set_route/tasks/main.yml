@@ -8,30 +8,21 @@
     cmd: "ip route del default"
   become: True
   when: inventory_hostname in groups["defroute_off"]
-# Изменение маршрута по умолчанию для группы 
+# Изменение маршрута по умолчанию для группы [server_route]: centralRouter, inetRouter2
 - name: change default route
   ansible.builtin.command:
   args:
     cmd: "ip route replace default via 192.168.255.1"
   become: True
   when: inventory_hostname in groups ["server_route"]
-
+# Изменение маршрута по умолчанию для centralServer
 - name: change default route for centralServer
   ansible.builtin.command:
   args:
     cmd: "ip route replace default via 192.168.2.2"
   become: True
   delegate_to: centralServer
-
-# - name: set up route on centralServer
-#   template:
-#     src: files/centralServer.j2
-#     dest: /etc/sysconfig/network-scripts/route-eth1
-#     owner: root
-#     group: root
-#     mode: 0644
-#   delegate_to: centralServer
-
+# Добавление маршрутов для inetRouter
 - name: set up route on inetRouter
   template:
     src: files/inetRouter.j2
@@ -42,4 +33,5 @@
   delegate_to: inetRouter
 
   notify: network_service
+
 
