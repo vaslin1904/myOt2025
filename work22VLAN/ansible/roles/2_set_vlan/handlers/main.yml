@@ -1,0 +1,16 @@
+---
+#module handlers
+- name: reset_network
+  ansible.builtin.service:
+    name: network.service
+    state: restarted
+    enabled: yes
+  when: "'grp_vlan1' in group_names"
+
+
+- name: netplan_apply
+  ansible.builtin.command:
+    args:
+      cmd: netplan apply
+  become: true
+  when: "'grp_vlan2' in group_names"

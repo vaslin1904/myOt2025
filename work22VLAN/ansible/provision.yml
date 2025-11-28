@@ -1,0 +1,35 @@
+---
+#Установка дополнительных пакетов все хосты
+- name: dop_install
+  hosts: all
+  gather_facts: true
+  become: True
+
+  roles:
+  - 1_dop_install
+
+# ##Настройка времени через ntp
+# - name: 2_set time_ntp
+#   hosts: all
+#   gather_facts: false
+#   become: True
+#
+#   roles:
+#   - 2_set time_ntp
+
+- name: set_vlan
+  hosts: all
+  gather_facts: true
+  become: True
+
+  roles:
+  - 2_set_vlan
+
+
+- name: 3_set_LACP
+  hosts: bond
+  gather_facts: true
+  become: True
+
+  roles:
+  - 3_set_LACP

@@ -1,0 +1,16 @@
+---
+- name: set vlan1 testClient1,testServer1
+  template:
+    src: template/ifcfg-vlan1.j2
+    dest: /etc/sysconfig/network-scripts/ifcfg-vlan1
+  when: "'grp_vlan1' in group_names"
+
+- name: set vlan2 testClient2,testServer2
+  template:
+    src: template/50-cloud-init.yaml.j2
+    dest: /etc/netplan/50-cloud-init.yaml
+  when: "'grp_vlan2' in group_names"
+
+  notify:
+    - reset_network
+    - netplan_apply
