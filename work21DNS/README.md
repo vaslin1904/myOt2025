@@ -1,4 +1,4 @@
-# Настройка DNS.Задание
+## Настройка DNS.Задание
  1. Взять стенд https://github.com/erlong15/vagrant-bind 
    * добавить еще один сервер client2
    * завести в зоне dns.lab имена:
@@ -12,12 +12,7 @@
   * клиент2 видит только dns.lab
 ______________________________________________________________________
 # Порядок выполнения
-1. Выполнение настроек роутера, через который остальные сервера сети будут выходит в интернет. InetRouter - **role Inet_Router**
-- устанавливаются пакеты iptables, iptables-servies: Inet_Router/inst_ipt.yml
-- копируем готовый файл с настройками files/iptables в /etc/sysconfig/iptables: Inet_Router/copy_config.yml
-- отключаем firewalld с помощью handlers в задаче Inet_Router/copy_config.yml
-- перезапускаем iptables и добавляем в автозапуск с помощью handlers в задаче Inet_Router/copy_config.yml
-
+1.Добавляем дополнительную машину "client2"  в vagrant файл.
 2. Настраиваем роутеры - **role routers**
 - включаем forwarding
 
