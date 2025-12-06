@@ -1,0 +1,47 @@
+---
+- name: Print all available facts
+  ansible.builtin.debug:
+    var: ansible_all_ipv4_addresses [1]
+
+#Установка временной зоны Европа/Москва
+- name: Set up timezone
+  timezone:
+    name: "Europe/Moscow"
+
+
+- name: install softs on CentOS
+  yum:
+    name:
+      - vim
+      - chrony
+    state: present
+    update_cache: true
+
+#Отключение firewalld и удаление его из автозагрузки
+- name: disable firewalld
+  service:
+    name: firewalld
+    state: stopped
+    enabled: false
+
+#Отключение SElinux из автозагрузки
+#Будет применено после перезагрузки
+- name: disable SElinux
+  selinux:
+    state: disabled
+
+# #Отключение SElinux до перезагрузки
+# - name: disable SElinux now
+#   shell: setenforce 0
+
+#Установка временной зоны Европа/Москва
+- name: Set up timezone
+  timezone:
+    name: "Europe/Moscow"
+
+#Запуск службы Chrony, добавление её в автозагрузку
+- name: enable chrony
+  service:
+    name: chronyd
+    state: restarted
+    enabled: true

@@ -1,0 +1,4 @@
+---
+- name: restart_hosts
+  reboot:
+    reboot_timeout: 3600

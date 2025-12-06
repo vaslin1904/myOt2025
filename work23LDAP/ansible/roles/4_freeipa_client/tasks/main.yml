@@ -1,0 +1,38 @@
+---
+- name: Ensure the crb repository is enabled
+  community.general.dnf_config_manager:
+    name: crb
+    state: enabled
+
+# - name: Исправляем /etc/hosts для FreeIPA (полная перезапись)
+#   copy:
+#     content: |
+#       127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+#       ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+#       {{ ansible_host }} {{ inventory_hostname }}.otus.lan {{ inventory_hostname }}
+#       192.168.56.10 ipa.otus.lan ipa
+#
+#     dest: /etc/hosts
+#     mode: '0644'
+#   become: yes
+
+- name: Install FreeIPA client
+  dnf:
+    name:
+      - freeipa-client
+    state: present
+    disable_gpg_check: yes
+
+- name: Run IPA client install
+  ansible.builtin.command: >
+    ipa-client-install
+    --unattended
+    --mkhomedir
+    --domain=OTUS.LAN
+    --server=ipa.otus.lan
+    --no-ntp
+    --force-join
+    -p admin
+    -w Secret123
+  args:
+    creates: /etc/ipa/default.conf

@@ -1,0 +1,26 @@
+---
+- name: Ensure the crb repository is enabled
+  community.general.dnf_config_manager:
+    name: crb
+    state: enabled
+
+- name: Install FreeIPA packages directly
+  dnf:
+    name:
+      - freeipa-server
+      - bind-dyndb-ldap
+      - ipa-server
+    state: present
+    disable_gpg_check: yes
+
+- name: Run IPA server install
+  ansible.builtin.command: >
+    ipa-server-install
+    --unattended
+    --domain=otus.lan
+    --realm=OTUS.LAN
+    --hostname=ipa.otus.lan
+    --admin-password=Secret123
+    --ds-password=Secret123
+  args:
+    creates: /etc/ipa/default.conf

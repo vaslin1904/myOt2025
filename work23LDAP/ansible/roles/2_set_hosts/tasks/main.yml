@@ -1,0 +1,8 @@
+---
+- name: set hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ lookup('template', 'single-host.j2') | trim }}"
+    state: present
+    backup: yes
+  become: true
