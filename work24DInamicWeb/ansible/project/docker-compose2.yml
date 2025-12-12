@@ -1,0 +1,78 @@
+services:
+  database:
+    labels:
+      com.example.description: "Database mysql"
+    image: mysql:8.0
+    container_name: database
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - ./dbdata:/var/lib/mysql
+    command: '--default-authentication-plugin=mysql_native_password'
+    networks:
+      - app-network
+
+  wordpress:
+    labels:
+      com.example.description: "Wordpress"
+    image: wordpress:5.1.1-fpm-alpine # официальный образ от разработчиков
+    container_name: wordpress
+    restart: unless-stopped
+# на странице образа в docker hub написано, какие можно задать переменные контейнеру https://hub.docker.com/_/wordpress
+    environment:
+      WORDPRESS_DB_HOST: database
+      WORDPRESS_DB_NAME: "${DB_NAME}" # Также импортируем переменные из .env
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: "${DB_ROOT_PASSWORD}"
+    volumes:
+      - ./wordpress:/var/www/html # сохраняем приложение на хост машине
+    networks:
+      - app-network
+    depends_on:
+      - database # контейнер wordpress дождется запуска БД
+
+  nginx:
+    labels:
+      com.example.description: "Nginx"
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./html:/var/www/html
+    depends_on:
+      - php
+    networks:
+      - app-network
+
+  app:
+    labels:
+      com.example.description: "App"
+    build: ./python # для нашего приложения нужны зависимости, поэтому собираем свой образ
+    container_name: app
+    restart: always
+    env_file:
+      - .env # импортируем в контейнер переменные из .env
+    command:
+      "gunicorn --workers=2 --bind=0.0.0.0:8000 mysite.wsgi:application" # команда для запуска django проекта, приложение будет работать на 8000 порту контейнера
+    networks:
+      - app-network
+
+  node:
+    labels:
+      com.example.description: "Node.js"
+    image: node:16.13.2-alpine3.15
+    container_name: node
+    working_dir: /opt/server # переназначим рабочую директорию для удобства
+    volumes:
+      - ./node:/opt/server # пробрасываем приложение в директорию контейнера
+    command: node test.js # запуск приложения
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

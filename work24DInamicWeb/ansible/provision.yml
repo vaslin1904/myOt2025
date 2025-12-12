@@ -1,0 +1,25 @@
+---
+#Установка дополнительных пакетов все хосты
+- name: dop_install for docker
+  hosts: all
+  gather_facts: true
+  become: True
+
+  roles:
+  - 1_dopInstall
+
+- name: install docker
+  hosts: all
+  gather_facts: true
+  become: True
+
+  roles:
+  - 2_install_docker
+
+- name: install docker-compose
+  hosts: all
+  gather_facts: true
+  become: True
+
+  roles:
+  - 3_up_compose

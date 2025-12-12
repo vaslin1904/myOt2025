@@ -1,0 +1,13 @@
+---
+# Копируем проект с хост машины в созданную через vagrant
+- name: Copy project
+  copy: src=project dest=/home/vagrant
+
+# чтобы применились права на использование docker, необходимо перелогиниться
+- name: reset ssh connection
+  meta: reset_connection
+
+- name: Run container
+  shell:
+    cmd: "docker-compose -f docker-compose.yml up -d"
+    chdir: /home/vagrant/project

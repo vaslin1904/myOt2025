@@ -1,0 +1,14 @@
+---
+- name: Install docker packages # устанавливаем пакеты необходимые для установки докера
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    - python3-pip
+    - gnupg
