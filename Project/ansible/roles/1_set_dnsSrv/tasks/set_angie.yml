@@ -1,0 +1,27 @@
+---
+- name: Create dir sites-available
+  file:
+    path: /etc/angie/{{ item }}
+    state: directory
+  loop:
+    - sites-available
+    - sites-enabled
+
+- name: Конфигурация сайта
+  template:
+    src: "template/angie/linuxpro.my"
+    dest: "/etc/angie/sites-available/linuxpro.my.conf"
+    owner: root
+    group: bind
+    mode: '0644'
+
+
+- name: Активация сайта — создание симлинка
+  ansible.builtin.file:
+    src: /etc/angie/sites-available/linuxpro.my.conf
+    dest: /etc/angie/sites-enabled/default
+    state: link
+    force: yes
+
+  notify:
+    - start_angie

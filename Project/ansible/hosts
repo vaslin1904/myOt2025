@@ -1,0 +1,18 @@
+[all]
+dnsSrv ansible_host=192.168.56.10 ansible_user=vagrant ansible_ssh_private_key_file=.vagrant/machines/dnsSrv/virtualbox/private_key
+#db-master ansible_user=vagrant ansible_ssh_private_key_file=.vagrant/machines/db-master/virtualbox/private_key
+
+[iphost]
+dnsSrv
+
+[ipdmz:vars]
+# Все ВМ в ipdmz подключаются через jump host (lb)
+ansible_ssh_common_args='-o ProxyJump=vagrant@192.168.56.20'
+
+[ipdmz]
+#db-master
+
+[db-master]
+#db-master
+
+[clients]

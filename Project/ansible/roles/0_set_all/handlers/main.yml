@@ -1,0 +1,13 @@
+---
+#module handlers
+- name: restart_nft
+  systemd:
+    name: nftables
+    enabled: yes
+    state: restarted
+
+- name: restart_frr
+  systemd:
+    name: frr
+    enabled: yes
+    state: started

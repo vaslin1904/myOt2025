@@ -1,0 +1,26 @@
+!
+! FRR for servers {{ inventory_hostname }}
+!
+frr version
+frr defaults traditional
+hostname {{ inventory_hostname }}
+log file /var/log/frr/frr.log
+
+router bgp 65001
+ bgp router-id {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+ no bgp default ipv4-unicast
+
+ address-family ipv4 unicast
+  network {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}/32
+ exit-address-family
+
+ neighbor 10.10.1.10 remote-as 65001
+ neighbor 10.10.1.10 update-source {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+ address-family ipv4 unicast
+  neighbor 10.10.1.10 activate
+ exit-address-family
+
+!
+line vty
+!
+end

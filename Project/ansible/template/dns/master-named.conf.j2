@@ -1,0 +1,30 @@
+options {
+
+    // network
+    listen-on { 10.10.1.10; 192.168.56.10; };
+    listen-on-v6 { none; };
+
+    // data
+	directory 	"/var/cache/bind";
+	dump-file 	"/var/cache/bind/cache_dump.db";
+	statistics-file "/var/cache/bind/named_stats.txt";
+	memstatistics-file "/var/cache/bind/named_mem_stats.txt";
+
+    // server
+	recursion yes;
+	allow-query     { any; };
+  allow-transfer { none; }; //для slave = any;
+
+  forwarders {
+  	 8.8.8.8;
+     1.1.1.1;
+  };
+
+    // dnssec
+    //https://www.iana.org/dnssec/files?spm=a2ty_o01.29997173.0.0.63295171Krq1RI
+  //  managed-keys {
+//      AwEAAaz/tAm8yTn4Mfeh5eyI96WSVexTBAvkMgJzkKTOiW1vkIbzxeF3+/4RgWOq7HrxRixHlFlExOLAJr5emLvN7SWXgnLh4+B5xQlNVz8Og8kvArMtNROxVQuCaSnIDdD5LKyWbRd2n9WGe2R8PzgCmr3EgVLrjyBxWezF0jLHwVN8efS3rCj/EWgvIWgb9tarpVUDK/b5+Da+sqqls3eNbuv7pr+5CjJZh0KCzkakc8FIqgpwhPUFRQQSQMzFVbL6gzx8Vq5f6rM9Z8+0H3MuL1FZ8VvK8wMqRm7u7YqZfG7qJZvU6z
+//  };
+	dnssec-validation auto;
+
+};

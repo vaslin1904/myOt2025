@@ -1,0 +1,22 @@
+;
+;BIND reverse zone linuxpro.my
+;
+$TTL 86400
+@ IN SOA dns.linuxpro.my. admin.linuxpro.my. (
+                              2711201407 ; Serial
+                              3600       ; Refresh (1 hour)
+                              600        ; Retry (10 minutes)
+                              86400      ; Expire (1 day)
+                              600        ; minimum (10 minutes)
+                              )
+
+              @ IN NS dns.linuxpro.my.
+
+              ; PTR-записи для 10.10.1.0/24
+              10  IN PTR dns.dmz.linuxpro.my.
+              31  IN PTR web1.dmz.linuxpro.my.
+              32  IN PTR web2.dmz.linuxpro.my.
+              51  IN PTR db-master.dmz.linuxpro.my.
+              52  IN PTR db-slave.dmz.linuxpro.my.
+              70  IN PTR backup.dmz.linuxpro.my.
+              90  IN PTR monitor.dmz.linuxpro.my.

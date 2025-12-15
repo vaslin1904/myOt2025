@@ -1,0 +1,15 @@
+{% if 'iphost' in group_names %}
+nameserver 192.168.56.10
+{% elif 'ipdmz' in group_names %}
+nameserver 10.10.1.10
+{% else %}
+# Fallback: internal DNS
+nameserver 10.10.1.10
+{% endif %}
+
+search linuxpro.my dmz.linuxpro.my
+
+#nameserver — IP-адрес сервера имён, на который перенаправляются
+#все DNS-запросы
+#domain — локальное доменное имя
+#search — список поиска. По умолчанию содержит только имя локального домена

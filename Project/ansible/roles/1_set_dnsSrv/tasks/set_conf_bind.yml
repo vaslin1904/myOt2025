@@ -1,0 +1,25 @@
+---
+#Создание директории для зон
+- name: Create dir for my zone
+  file:
+    path: /etc/bind/zones
+    state: directory
+    owner: root
+    group: bind
+    mode: '0755'
+
+- name: Конфигурация прямой  и обратной зоны
+  template:
+    src: "template/dns/{{ item.src }}"
+    dest: "/etc/bind/{{ item.dest }}"
+    owner: root
+    group: bind
+    mode: '0644'
+  loop:
+    - {src: "db.linuxpro.my.j2", dest: "zones/db.linuxpro.my"}
+    - {src: "db.ipdns.j2", dest: "zones/db.ipdns"}
+    - {src: "named.conf.local.j2", dest: "named.conf.local"}
+    - {src: "master-named.conf.j2", dest: "named.conf.options"}
+
+  notify:
+  - restart_bind9

@@ -1,0 +1,29 @@
+---
+#Общие настройки
+- name: all setting
+  hosts: all
+  gather_facts: true
+  become: True
+
+  roles:
+  - 0_set_all
+#Настройка DNS and Angie
+#Имеет выход в интернет, подключение всей сети через него
+#Ансибл подключается к машинам из dmz  зоны через него
+- name: Set server DNS and Angie
+  hosts: dnsSrv
+  gather_facts: true
+  become: True
+
+  roles:
+  - 1_set_dnsSrv
+
+
+# #Настройка сервер базы данных - master
+# - name: Set DB master server
+#   hosts: db-master
+#   gather_facts: true
+#   become: True
+#
+#   roles:
+#   - 2_dbmaster

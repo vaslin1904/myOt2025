@@ -1,0 +1,9 @@
+---
+# #Копирование ключа зоны DNS
+# - name: set zonetransfer key
+#   template:
+#     src: template/named.zonetransfer.key
+#     dest: /etc/named.zonetransfer.key
+#     owner: root
+#     group: named
+#     mode: 0644

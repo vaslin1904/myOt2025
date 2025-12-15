@@ -1,0 +1,17 @@
+---
+#######
+- name: install apt
+  include_tasks: install_apt.yml
+
+- name: set DNS zone
+  include_tasks: resolve_dns.yml
+
+#######
+- name: SEt forwarding
+  include_tasks: set_forward.yml
+
+- name: set nftables
+  include_tasks: set_nft.yml
+#######
+- name: SEt dinamic route
+  include_tasks: set_frr.yml

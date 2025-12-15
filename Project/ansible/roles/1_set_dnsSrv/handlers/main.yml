@@ -1,0 +1,12 @@
+---
+- name: restart_bind9
+  systemd:
+    name: named
+    enabled: yes
+    state: restarted
+
+- name: start_angie
+  systemd:
+    name: angie
+    enabled: yes
+    state: started
