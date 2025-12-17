@@ -1,0 +1,21 @@
+---
+#включить ospfd
+- name: Включить только ospfd
+  lineinfile:
+    path: /etc/frr/daemons
+    # Используем простой поиск по строке — без регулярок
+    line: "ospfd=yes"
+    insertafter: "^#ospfd="
+    backup: yes
+#ДНС сервер - собирает машруты всех, через него все попадают в интернет
+- name: Развернуть динамическую машрутизацию
+  template:
+    src: "template/frr/frr_dnsSrv.conf.j2"
+    dest: /etc/frr/frr.conf
+    owner: frr
+    group: frr
+    mode: '0640'
+
+  notify:
+    - start_frr
+    - restart_frr

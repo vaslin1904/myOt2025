@@ -1,27 +1,18 @@
 ---
-- name: restart_bind9
-  systemd:
-    name: named
-    enabled: yes
-    state: restarted
-
-- name: start_angie
-  systemd:
-    name: angie
-    enabled: yes
-    state: started
-
+#module handlers
 - name: start_frr
   systemd:
     name: frr
     enabled: yes
     state: started
 
+
 - name: restart_frr
   systemd:
     name: frr
     enabled: yes
     state: restarted
+
 
 - name: restart_nft
   systemd:

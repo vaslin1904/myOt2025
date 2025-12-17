@@ -29,6 +29,7 @@
     state: present
     update_cache: true
     lock_timeout: 600
+  ignore_errors: yes
   loop:
     - angie
     - angie-module-zstd

@@ -1,0 +1,3 @@
+mysql_root_password: "StrongRootPass123!"   # ← меняйте!
+mysql_server_id: 1                         # 1 для master, 2 для slave
+mysql_replication_db: "appdb"               # или "wordpress", если используете WP

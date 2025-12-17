@@ -1,0 +1,10 @@
+!
+! OSPF для {{ inventory_hostname }}
+!
+router ospf
+ ospf router-id {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+ network {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}/24 area 0
+!
+line vty
+!
+end

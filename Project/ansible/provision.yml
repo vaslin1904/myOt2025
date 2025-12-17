@@ -18,12 +18,20 @@
   roles:
   - 1_set_dnsSrv
 
+#Настройка серверов
+- name: Set servers
+  hosts: ipdmz
+  gather_facts: true
+  become: True
 
-# #Настройка сервер базы данных - master
-# - name: Set DB master server
-#   hosts: db-master
-#   gather_facts: true
-#   become: True
-#
-#   roles:
-#   - 2_dbmaster
+  roles:
+  - 2_clients
+
+#Настройка серверов
+- name: Set DB
+  hosts: db
+  gather_facts: true
+  become: True
+
+  roles:
+  - 3_db

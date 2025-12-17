@@ -21,5 +21,13 @@
     - {src: "named.conf.local.j2", dest: "named.conf.local"}
     - {src: "master-named.conf.j2", dest: "named.conf.options"}
 
+- name: set resolv.conf
+  template:
+    src: "template/dns/server.conf.j2"
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: 0644
+
   notify:
   - restart_bind9

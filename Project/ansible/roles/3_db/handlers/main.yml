@@ -1,0 +1,12 @@
+---
+# - name: restart_sqlserver
+#   ansible.builtin.systemd:
+#     name: mysql
+#     state: restarted
+#     enabled: yes
+
+- name: restart_nft
+  systemd:
+    name: nftables
+    enabled: yes
+    state: restarted

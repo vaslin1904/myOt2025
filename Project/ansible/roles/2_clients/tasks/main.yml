@@ -1,0 +1,9 @@
+---
+- name: SEt dinamic route
+  include_tasks: set_frr.yml
+
+- name: set DNS zone
+  include_tasks: resolve.yml
+
+- name: set DNS zone
+  include_tasks: default_route.yml

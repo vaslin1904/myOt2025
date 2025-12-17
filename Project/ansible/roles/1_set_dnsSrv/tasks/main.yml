@@ -1,19 +1,26 @@
 ---
+- name: SEt forwarding
+  include_tasks: set_forward.yml
 #Установка пакетов для реализации DNS сервера и angie:
 #bind9, bind9-utils, vim
 - name: Install apt
   include_tasks: install.yml
-#В папке .etc/bind/zones создаются файлы для прямой зоны (по имени к ip)
-#и обратной зоны (по ip к имени).
-#Разделяются DNS имена для внешнего хоста  и для внутренней сети - DMZ зона
-#Описание зон добавляется в файл named.conf.local
-#Расширяются опции с помощью файла named.conf.options
+
+- name: Install angie
+  include_tasks: install_angie.yml
+# ########
+- name: SEt angie
+  include_tasks: set_angie.yml
+
 - name: Set DNS conf
   include_tasks: set_conf_bind.yml
 ########
-- name: Install angie
-  include_tasks: install_angie.yml
+######
+- name: SEt dinamic route
+  include_tasks: set_frr.yml
 
-########
-- name: SEt angie
-  include_tasks: set_angie.yml
+- name: SEt resolv
+  include_tasks: resolve_dns.yml
+
+- name: set nftables
+  include_tasks: set_nft.yml
