@@ -35,3 +35,4 @@
 
   roles:
   - 3_db
+  tags: db

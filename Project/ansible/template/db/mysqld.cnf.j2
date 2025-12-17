@@ -1,0 +1,34 @@
+[mysqld]
+
+datadir = /var/lib/mysql
+socket = /var/run/mysqld/mysqld.sock
+pid-file = /var/run/mysqld/mysqld.pid
+log-error = /var/log/mysql/error.log
+
+user            = mysql
+port            = 3306
+mysqlx          = OFF
+mysql_native_password = ON
+skip-networking = Off
+# Сеть
+#bind-address = 127.0.0.1
+bind-address    = 0.0.0.0
+skip-name-resolve
+
+
+{% if ansible_hostname == 'db-master' %}
+server-id       = 1
+{% elif ansible_hostname == 'db-slave' %}
+server-id       = 2
+{% endif %}
+
+log-bin         = mysql-bin
+binlog-format   = ROW
+binlog_expire_logs_seconds = 172800
+
+gtid_mode       = ON
+enforce_gtid_consistency = ON
+
+#Производительность
+innodb_buffer_pool_size = 128M
+max_connections = 151

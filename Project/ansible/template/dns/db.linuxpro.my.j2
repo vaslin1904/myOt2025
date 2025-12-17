@@ -2,7 +2,7 @@
 ;BIND direct zone linuxpro.my
 ;
 $TTL  86400
-@ IN  SOA dns.linuxpro.my. root.linuxpro.my. (
+@ IN  SOA dnsSrv.linuxpro.my. root.linuxpro.my. (
                           2711201407 ; Serial
                           3600       ; Refresh (1 hour)
                           600        ; Retry (10 minutes)
@@ -12,9 +12,9 @@ $TTL  86400
 
             ; NS - Класс записи — Internet
             ; и A-записи - Тип записи — Address (IPv4-адрес)
-            @         IN NS   dns.linuxpro.my.
-            dns       IN A    192.168.56.10
-            dns.dmz   IN A    10.10.1.10
+            @         IN NS   dnsSrv.linuxpro.my.
+            dnsSrv       IN A    192.168.56.10
+            dnsSrv.dmz   IN A    10.10.1.10
 
             ; Внешние сервисы (доступны с хоста)
             monitor    IN A    192.168.56.90
@@ -29,6 +29,6 @@ $TTL  86400
             backup.dmz     IN A 10.10.1.70
 
 ; Алиасы (CNAME)
-www         IN CNAME dns
+www         IN CNAME dnsSrv
 grafana     IN CNAME monitor
 prometheus  IN CNAME monitor

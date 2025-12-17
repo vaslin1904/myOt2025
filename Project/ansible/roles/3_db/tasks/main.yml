@@ -1,9 +1,11 @@
 ---
-- name: install apt for db
-  include_tasks: set_nft.yml
-
-- name: install apt for db
-  include_tasks: install_aptdb.yml
-#
 # - name: install MySql
 #   include_tasks: install_mySql.yml
+- name: Add password
+  include_tasks: add_pass.yml
+
+# - name: Add plugin
+#   include_tasks: add_plugin.yml
+
+- name: SEt MySql
+  include_tasks: set_dbMySql.yml

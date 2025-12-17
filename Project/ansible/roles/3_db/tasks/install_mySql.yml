@@ -1,67 +1,45 @@
 ---
-- name: Install repository
+- name: update_cache
   apt:
-    dpkg: "https://repo.percona.com/apt/percona-release_latest.$(lsb_release -sc)_all.deb"
+   update_cache: yes
+   cache_valid_time: 3600
+
+- name: Install deb
+  apt:
+    deb: https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  become: true
+  loop:
+    - gnupg2
+    - lsb-release
+    - python3-pymysql
+
+- name: Обновляем кэш APT
+  apt:
     update_cache: yes
 
-- name: Set packet
+- name: Set_repository
   ansible.builtin.command:
   args:
-    cmd: "sudo percona-release enable-only ps57"
+    cmd: "{{ item }}"
+  loop:
+    - sudo percona-release enable pdps-8x-innovation
+    - percona-release enable tools release
+  become: true
+
+- name: Обновляем кэш APT
+  apt:
+    update_cache: yes
 
 - name: Устанавливаем Percona Server и клиент
-  ansible.builtin.apt:
+  apt:
     name:
       - percona-server-server
       - percona-server-client
     state: present
-    update_cache: yes
-
-    - name: Устанавливаем пароль root@localhost
-      community.mysql.mysql_user:
-        name: root
-        host: localhost
-        password: "{{ mysql_root_password }}"
-        login_user: root
-        login_password: ""
-        state: present
-      ignore_errors: yes
-      register: mysql_root_set
-
-
-    - name: Устанавливаем пароль root (повторная попытка с пустым паролём)
-      community.mysql.mysql_user:
-        name: root
-        host: localhost
-        password: "{{ mysql_root_password }}"
-        login_user: root
-        login_password: ""
-        state: present
-      when: mysql_root_set is failed
-
-
-    - name: Настраиваем my.cnf (безопасные параметры)
-      ansible.builtin.lineinfile:
-        path: /etc/mysql/percona-server.conf.d/mysqld.cnf
-        regexp: "{{ item.regexp }}"
-        line: "{{ item.line }}"
-        state: present
-      loop:
-        - { regexp: '^bind-address', line: 'bind-address = 0.0.0.0' }
-        - { regexp: '^server-id', line: 'server-id = {{ mysql_server_id }}' }
-        - { regexp: '^log-bin', line: 'log-bin = mysql-bin' }
-        - { regexp: '^binlog-do-db', line: 'binlog-do-db = {{ mysql_replication_db }}' }
-        - { regexp: '^enforce_gtid_consistency', line: 'enforce_gtid_consistency = ON' }
-        - { regexp: '^gtid_mode', line: 'gtid_mode = ON' }
-
-       notify:
-         - restart_sqlserver
-
-
-  rescue:
-    - name: Критическая ошибка при установке Percona Server
-      ansible.builtin.fail:
-        msg: |
-          Не удалось установить Percona Server.
-          Проверьте: интернет, репозиторий, свободное место.
-          Результат: {{ mysql_root_set.msg | default('unknown') }}
+  become: true

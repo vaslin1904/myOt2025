@@ -1,7 +1,8 @@
 ---
-- name: Удалить default route через NAT (10.0.2.2)
-  command: ip route del default via 10.0.2.2
-  ignore_errors: yes
+- block:
+  - name: Удалить default route через NAT (10.0.2.2)
+    command: ip route del default via 10.0.2.2
 
-- name: Установить default route через dnsSrv
-  command: ip route add default via 10.10.1.10 dev enp0s8
+  - name: Установить default route через dnsSrv
+    command: ip route add default via 10.10.1.10 dev enp0s8
+  ignore_errors: yes
