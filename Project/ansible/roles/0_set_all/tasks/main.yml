@@ -1,9 +1,13 @@
 ---
 #######
-- name: install apt
-  include_tasks: install_apt.yml
+- name: install default resolv
+  include_tasks: 0_default_resolv.yml
+  when: inventory_hostname == 'dnsSrv'
 
 - name: install apt
-  include_tasks: install_frr.yml
+  include_tasks: 1_install_apt.yml
+
+- name: install apt
+  include_tasks: 2_install_frr.yml
 #######
 #

@@ -1,0 +1,8 @@
+---
+- name: set resolv.conf
+  template:
+    src: "template/dns/default_resolv.conf"
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: '0644'

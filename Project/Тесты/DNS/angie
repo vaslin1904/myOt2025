@@ -1,0 +1,13 @@
+# Проверить работу Angie
+sudo systemctl status angie
+sudo angie -t
+
+# Проверить конфигурацию
+sudo angie -T
+
+# Проверить доступ к веб-сайту
+curl -k https://192.168.56.10
+curl -k https://linuxpro.my
+
+# Проверить health-check
+curl -k https://192.168.56.10/healthz

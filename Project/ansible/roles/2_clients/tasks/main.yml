@@ -1,12 +1,12 @@
 ---
 - name: SEt dinamic route
-  include_tasks: set_frr.yml
+  include_tasks: 1_set_frr.yml
 
 - name: set DNS zone
-  include_tasks: resolve.yml
+  include_tasks: 2_resolve.yml
 
 - name: set DNS zone
-  include_tasks: default_route.yml
+  include_tasks: 3_default_route.yml
 
 - name: Set nftables
-  include_tasks: set_nft.yml
+  include_tasks: 4_set_nft.yml

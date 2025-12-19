@@ -1,0 +1,30 @@
+---
+- name: Add config MySql
+  template:
+    src: "template/db/mysqld.cnf.j2"
+    dest: /etc/mysql/conf.d/mysql.cnf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify:
+    # - restart_mysql
+
+- name: Удаляем анонимных пользователей
+  mysql_user:
+    name: ""
+    host: "{{ item }}"
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  loop: ["localhost", "{{ ansible_hostname }}"]
+  become: true
+
+- name: Удаляем тестовую БД
+  mysql_db:
+    name: test
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  become: true
+
+  notify:
+    - restart_mysql

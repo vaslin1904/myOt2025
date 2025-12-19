@@ -1,0 +1,26 @@
+---
+- name: Add wp-config.php
+  template:
+    src: "template/web/wp-config.php.j2"
+    dest: /var/www/wordpress/wp-config.php
+    owner: www-data
+    group: www-data
+    mode: '0640'
+
+- name: Скопировать health-check скрипт
+  copy:
+    src: "template/web/health.php"
+    dest: /var/www/wordpress/healthz.php
+    owner: www-data
+    group: www-data
+    mode: '0644'
+# - name: Generate keys
+#   shell: "curl -s https://api.wordpress.org/secret-key/1.1/salt/"
+
+- name: Включить сайт
+  file:
+    src: /var/www/wordpress
+    dest: /var/www/html
+    state: link
+    force: yes
+  become: true

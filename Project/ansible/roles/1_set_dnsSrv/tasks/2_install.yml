@@ -1,0 +1,12 @@
+---
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  become: true
+  ignore_errors: yes
+  loop:
+    - bind9
+    - bind9utils
+    - gnupg2

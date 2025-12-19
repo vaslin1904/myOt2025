@@ -1,15 +1,22 @@
 ---
-#Общие настройки
-- name: all setting
-  hosts: all
-  gather_facts: true
-  become: True
-
-  roles:
-  - 0_set_all
-#Настройка DNS and Angie
-#Имеет выход в интернет, подключение всей сети через него
-#Ансибл подключается к машинам из dmz  зоны через него
+# #- name: all setting
+#   hosts: dnsSrv
+#   gather_facts: true
+#   become: True
+#
+#   roles:
+#   - 0_installangie
+#
+# - name: all setting
+#   hosts: all
+#   gather_facts: true
+#   become: True
+#
+#   roles:
+#   - 0_set_all
+# Настройка DNS and Angie
+# Имеет выход в интернет, подключение всей сети через него
+# Ансибл подключается к машинам из dmz  зоны через него
 - name: Set server DNS and Angie
   hosts: dnsSrv
   gather_facts: true
@@ -36,3 +43,30 @@
   roles:
   - 3_db
   tags: db
+
+- name: all setting
+  hosts: "web"
+  gather_facts: true
+  become: True
+
+  roles:
+  - 0_installangie
+  tags: wb1
+
+- name: Set web
+  hosts: web
+  gather_facts: true
+  become: True
+
+  roles:
+  - 4_web
+  tags: wb
+
+- name: Set monitor with backup
+  hosts: monitor
+  gather_facts: true
+  become: True
+
+  roles:
+  - 5_monitor
+  tags: mon

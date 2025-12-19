@@ -1,0 +1,4 @@
+https://linuxpro.my → WordPress
+https://192.168.56.10 → Angie + DNS
+http://192.168.56.90:3000 → Grafana
+http://192.168.56.70:3000 → Backup сервер

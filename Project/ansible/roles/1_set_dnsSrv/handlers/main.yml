@@ -11,6 +11,12 @@
     enabled: yes
     state: started
 
+- name: reload_angie
+  systemd:
+    name: angie
+    enabled: yes
+    state: reloaded
+
 - name: start_frr
   systemd:
     name: frr

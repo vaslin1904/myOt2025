@@ -1,0 +1,21 @@
+---
+#добавляем gpg отключение
+- name: add gpg key
+  apt_key:
+    url: "https://deb.frrouting.org/frr/keys.asc"
+    state: present
+#Добавляем репозиторий с пакетом frr
+- name: add repo frr
+  apt_repository:
+    repo: 'deb https://deb.frrouting.org/frr {{ ansible_distribution_release}} frr-stable'
+    state: present
+#Устанавливаем пакет frr
+- name: Install frr
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  become: true
+  loop:
+    - frr
+    - frr-pythontools

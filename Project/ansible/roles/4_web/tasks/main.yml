@@ -1,0 +1,9 @@
+---
+- name: Install app
+  include_tasks: 1_install_app.yml
+
+- name: Install app
+  include_tasks: 2_add_wordpress.yml
+
+- name: Add connection with db
+  include_tasks: 3_conn_db.yml

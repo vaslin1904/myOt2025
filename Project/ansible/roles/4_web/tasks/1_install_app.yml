@@ -1,0 +1,5 @@
+---
+- name: Установка LAMP-стека
+  apt:
+    name: [mysql-client, php, php-mysql, php-curl, php-gd, php-mbstring, php-xml, php-zip]
+    state: present

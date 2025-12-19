@@ -1,0 +1,10 @@
+---
+- name: add file with password
+  template:
+    src: "template/db/.my.cnf"
+    dest: "{{ item }}"
+  ignore_errors: yes
+  loop:
+    - /root/.my.cnf
+    - /home/vagrant/.my.cnf
+  become: yes

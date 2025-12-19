@@ -1,0 +1,5 @@
+# Проверить работу Telegram webhook
+curl http://localhost:9094/telegram
+
+# Проверить логи Telegram webhook
+sudo journalctl -u telegram-webhook -n 20

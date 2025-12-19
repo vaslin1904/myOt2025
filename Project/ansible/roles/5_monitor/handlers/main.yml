@@ -1,0 +1,21 @@
+---
+- name: restart_sys
+  command: systemctl daemon-reload
+
+- name: start_alert
+  systemd:
+    name: alertmanager
+    state: started
+    enabled: yes
+
+- name: start_prometheus
+  systemd:
+    name: prometheus
+    state: restarted
+    enabled: yes
+
+- name: start_grafana
+  systemd:
+    name: grafana-server
+    state: restarted
+    enabled: yes

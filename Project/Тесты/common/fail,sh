@@ -1,0 +1,12 @@
+# Остановить db-master
+sudo systemctl stop mysql
+
+# Проверить статус db-slave
+sudo mysql -e "SHOW SLAVE STATUS\G"
+
+# Проверить, что db-slave стал мастером
+sudo mysql -e "SELECT @@read_only;"
+sudo mysql -e "SELECT @@server_id;"
+
+# Проверить, что WordPress использует новый мастер
+curl http://localhost

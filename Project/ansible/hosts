@@ -5,10 +5,13 @@ ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
 dnsSrv ansible_host=192.168.56.10
 db-master ansible_host=10.10.1.51
 db-slave ansible_host=10.10.1.52
-web1=10.10.1.31
+web1 ansible_host=10.10.1.31
+web2 ansible_host=10.10.1.32
+monitor ansible_host=192.168.56.90
 
 [iphost]
 dnsSrv
+monitor
 
 [ipdmz:vars]
 # Все ВМ в ipdmz подключаются через jump host dnsSrv
@@ -18,6 +21,11 @@ ansible_ssh_common_args='-o ProxyJump=vagrant@192.168.56.10'
 db-master
 db-slave
 web1
+web2
+
+[web]
+web1
+web2
 
 [db]
 db-master
@@ -27,3 +35,5 @@ db-slave
 db-master
 db-slave
 web1
+web2
+monitor

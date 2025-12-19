@@ -1,0 +1,38 @@
+---
+# Установка Alertmanager
+- name: Скачать Alertmanager
+  get_url:
+    url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz
+    dest: /tmp/alertmanager.tar.gz
+
+- name: Распаковать Alertmanager
+  unarchive:
+    src: /tmp/alertmanager.tar.gz
+    dest: /opt/
+    remote_src: yes
+
+- name: Создать директорию для Alertmanager
+  file:
+    path: /etc/alertmanager
+    state: directory
+    mode: '0755'
+
+- name: Создать директорию для Alertmanager
+  file:
+    path: /var/lib/alertmanager
+    state: directory
+    mode: '0755'
+    owner: alertmanager
+    group: alertmanager
+    
+- name: Скопировать конфиг Alertmanager
+  template:
+    src: "template/monitor/{{ item.src }}"
+    dest: "/etc/{{ item.dest }}"
+    mode: '0644'
+  loop:
+    - {src: "alertmanager.yml.j2", dest: "alertmanager/alertmanager.yml"}
+    - {src: "alert.service", dest: "systemd/system/alertmanager.service"}
+  notify:
+    - restart_sys
+    - start_alert

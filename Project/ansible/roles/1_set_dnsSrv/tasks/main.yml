@@ -1,26 +1,23 @@
 ---
 - name: SEt forwarding
-  include_tasks: set_forward.yml
+  include_tasks: 1_set_forward.yml
 #Установка пакетов для реализации DNS сервера и angie:
 #bind9, bind9-utils, vim
-- name: Install apt
-  include_tasks: install.yml
+# - name: SEt resolv
+#   include_tasks: 0_resolve_dns.yml
 
-- name: Install angie
-  include_tasks: install_angie.yml
+- name: Install apt
+  include_tasks: 2_install.yml
 # ########
 - name: SEt angie
-  include_tasks: set_angie.yml
+  include_tasks: 3_set_angie.yml
 
 - name: Set DNS conf
-  include_tasks: set_conf_bind.yml
+  include_tasks: 4_set_conf_bind.yml
 ########
 ######
 - name: SEt dinamic route
-  include_tasks: set_frr.yml
-
-- name: SEt resolv
-  include_tasks: resolve_dns.yml
+  include_tasks: 5_set_frr.yml
 
 - name: set nftables
-  include_tasks: set_nft.yml
+  include_tasks: 6_set_nft.yml

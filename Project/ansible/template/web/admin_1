@@ -1,0 +1,7 @@
+add_shortcode('crud_admin', function() {
+    ob_start();
+    include __DIR__ . '/admin/index.php';
+    return ob_get_clean();
+});
+
+//В WordPress создайте страницу admin с шорткодом:

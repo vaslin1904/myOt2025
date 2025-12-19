@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first.rules"
+  # - "second.rules"
+
+scrape_configs:
+{% for target in prometheus_targets %}
+  - {{ target | to_nice_yaml(indent=2) | indent(2) }}
+{% endfor %}

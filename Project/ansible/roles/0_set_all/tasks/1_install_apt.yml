@@ -1,0 +1,21 @@
+---
+# - name: update apt cache
+#   apt:
+#    update_cache: yes
+
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  become: true
+  ignore_errors: yes
+  loop:
+    - nftables
+    - curl
+    - wget
+    - ca-certificates
+    - apt-transport-https
+    - unzip
+    - net-tools
+    - traceroute

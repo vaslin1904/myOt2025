@@ -1,0 +1,48 @@
+---
+- name: update_cache
+  apt:
+   update_cache: yes
+   cache_valid_time: 3600
+
+- name: Install deb
+  apt:
+    deb: https://repo.percona.com/apt/percona-release_1.0-8.generic_all.deb
+
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  become: true
+  loop:
+    - gnupg2
+    - lsb-release
+    - python3-pymysql
+
+- name: Обновляем кэш APT
+  apt:
+    update_cache: yes
+
+- name: Set_repository
+  ansible.builtin.command:
+  args:
+    cmd: "{{ item }}"
+  loop:
+    - percona-release setup ps57
+    - percona-release enable tools release
+  become: true
+
+- name: Обновляем кэш APT
+  apt:
+    update_cache: yes
+
+- name: Устанавливаем Percona Server и клиент
+  apt:
+    name:
+      - percona-server-server-5.7
+      - percona-server-client-5.7
+    state: present
+  become: true
+
+  notify:
+    - start_mysql
