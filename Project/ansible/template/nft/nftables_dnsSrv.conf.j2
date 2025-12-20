@@ -29,7 +29,7 @@ table inet filter {
           tcp dport 53 accept
 
         ### Angie (HTTPS/HTTP) — только с хоста
-        iifname "enp0s19" tcp dport { 80, 443 } accept
+        tcp dport { 80, 443 } accept
 
         ### Мониторинг
         iifname "enp0s8" ip saddr 10.10.1.0/24 tcp dport 9100 accept   # node_exporter

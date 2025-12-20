@@ -1,0 +1,15 @@
+- name: Создаем скрипт для проверки доступности db-master
+  copy:
+    content: |
+      #!/bin/bash
+      if ! mysqladmin ping -h {{ db_master_ip }} -u {{ db_user }} -p{{ db_password }} --silent; then
+        sed -i 's/{{ db_master_ip }}/{{ db_slave_ip }}/g' /var/www/html/site/wp-config.php
+      fi
+    dest: /usr/local/bin/check-db.sh
+    mode: '0755'
+
+- name: Добавляем cron для проверки базы данных
+  cron:
+    name: "Check database availability"
+    job: "/usr/local/bin/check-db.sh"
+    minute: "*/1"

@@ -2,11 +2,14 @@
 - name: install apt
   include_tasks: 1_install.yml
 
+- name: set resolv
+  include_tasks: 2_resolve.yml
+
 - name: install Prometeus
-  include_tasks: 2_prometeis_inst.yml
+  include_tasks: 3_prometeis_inst.yml
 
 - name: install Grafana
-  include_tasks: 3_grafana_inst.yml
+  include_tasks: 4_grafana_inst.yml
 
 - name: install Alertmanager
-  include_tasks: 4_alter_inst.yml
+  include_tasks: 5_alter_inst.yml

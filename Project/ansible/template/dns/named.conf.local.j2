@@ -1,12 +1,18 @@
 // Описание прямой и обратной зоны
 
-zone "linuxpro.my" {
+zone "linuxpro" {
     type master;
     file "/etc/bind/zones/db.linuxpro.my";
     allow-transfer { none; };
 };
 
 zone "1.10.10.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/db.ipdns";
+    allow-transfer { none; };
+};
+
+zone "56.168.192.in-addr.arpa" {
     type master;
     file "/etc/bind/zones/db.ipdns";
     allow-transfer { none; };

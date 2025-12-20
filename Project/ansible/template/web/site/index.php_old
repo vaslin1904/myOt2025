@@ -1,0 +1,93 @@
+<?php
+// Подключение к базе данных
+$servername = "db-master"; // Имя хоста или IP базы данных
+$username = "wp_user";
+$password = "StrongWPpass123!";
+$dbname = "wordpress";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Добавление записи
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add'])) {
+    $name = $_POST['name'];
+    $sql = "INSERT INTO wp_custom_table (name) VALUES ('$name')";
+    $conn->query($sql);
+}
+
+// Удаление записи
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['delete'])) {
+    $id = $_GET['delete'];
+    $sql = "DELETE FROM wp_custom_table WHERE id=$id";
+    $conn->query($sql);
+}
+
+// Редактирование записи
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['edit'])) {
+    $id = $_POST['id'];
+    $name = $_POST['name'];
+    $sql = "UPDATE wp_custom_table SET name='$name' WHERE id=$id";
+    $conn->query($sql);
+}
+
+// Получение данных из таблицы
+$sql = "SELECT * FROM wp_custom_table";
+$result = $conn->query($sql);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление базой данных</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <h1>Управление базой данных</h1>
+
+    <!-- Форма добавления записи -->
+    <form method="POST">
+        <input type="text" name="name" placeholder="Введите имя">
+        <input type="submit" name="add" value="Добавить">
+    </form>
+
+    <!-- Список таблиц -->
+    <div class="table-list">
+        <h2>Список таблиц</h2>
+        <ul>
+            <li><a href="#custom_table">wp_custom_table</a></li>
+        </ul>
+    </div>
+
+    <!-- Вывод таблицы -->
+    <h2>Таблица wp_custom_table</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Действия</th>
+        </tr>
+        <?php while ($row = $result->fetch_assoc()): ?>
+        <tr>
+            <td><?= $row['id'] ?></td>
+            <td><?= $row['name'] ?></td>
+            <td class="actions">
+                <!-- Форма редактирования -->
+                <form method="POST" style="display:inline;">
+                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                    <input type="text" name="name" value="<?= $row['name'] ?>" placeholder="Новое имя">
+                    <input type="submit" name="edit" value="Редактировать">
+                </form>
+                <!-- Ссылка удаления -->
+                <a href="?delete=<?= $row['id'] ?>" class="delete">Удалить</a>
+            </td>
+        </tr>
+        <?php endwhile; ?>
+    </table>
+</body>
+</html>

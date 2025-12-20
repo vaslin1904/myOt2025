@@ -1,0 +1,36 @@
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet filter {
+    chain input {
+        type filter hook input priority 0; policy drop;
+
+        # Разрешить loopback
+        iif "lo" accept
+
+        # Разрешить уже установленные соединения
+        ct state established,related accept
+
+        # Разрешить ICMP (ping)
+        ip protocol icmp accept
+
+        # Разрешить HTTP/HTTPS (для доступа к сайту)
+        tcp dport { 80, 443 } ip saddr 192.168.56.0/24 accept
+        tcp dport { 80, 443 } ip saddr 10.10.1.0/24 accept
+
+        # Разрешить SSH (для подключения через jump-сервер)
+        tcp dport 22 ip saddr 192.168.56.1 accept
+
+        # Логировать все остальные попытки подключения
+        log prefix "Denied: " flags all limit rate 5/minute
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}

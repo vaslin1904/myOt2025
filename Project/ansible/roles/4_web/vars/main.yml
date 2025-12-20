@@ -1,0 +1,11 @@
+---
+db_name: wordpress
+db_user: "wp_user"
+mysql_wp_password: "wpPass"
+db_master_ip: "10.10.1.51"
+db_slave_ip: "10.10.1.52"
+db_name: "wordpress"
+
+
+wordpress_version: "6.0"
+site: /var/www/my.linuxpro/html

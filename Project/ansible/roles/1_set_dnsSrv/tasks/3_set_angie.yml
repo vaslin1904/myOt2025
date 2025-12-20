@@ -4,7 +4,6 @@
     src: "template/angie/angie.conf"
     dest: "/etc/angie/angie.conf"
 
-
 - name: Create dir sites-available
   file:
     path: /etc/angie/{{ item }}
@@ -20,7 +19,6 @@
     owner: root
     group: bind
     mode: '0644'
-
 
 - name: Активация сайта — создание симлинка
   ansible.builtin.file:

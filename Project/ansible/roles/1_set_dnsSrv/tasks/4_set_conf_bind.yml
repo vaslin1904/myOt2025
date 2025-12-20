@@ -19,7 +19,7 @@
     - {src: "db.linuxpro.my.j2", dest: "zones/db.linuxpro.my"}
     - {src: "db.ipdns.j2", dest: "zones/db.ipdns"}
     - {src: "named.conf.local.j2", dest: "named.conf.local"}
-    - {src: "master-named.conf.j2", dest: "named.conf.options"}
+    - {src: "named.conf.options.j2", dest: "named.conf.options"}
 
 - name: set resolv.conf
   template:

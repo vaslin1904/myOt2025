@@ -1,0 +1,21 @@
+//где искать зоны (области DNS, например, ваш домен), указывает путь до логов
+options {
+  directory 	"/var/cache/bind";
+
+  recursion yes;
+  allow-recursion { localhost; 10.10.1.0/24; 192.168.56.0/24; };
+  allow-query { localhost; 10.10.1.0/24; 192.168.56.0/24; };
+
+  listen-on port 53 { 127.0.0.1; 10.10.1.10; 192.168.56.10; };
+  listen-on-v6 { none; };
+
+  dnssec-validation auto;
+  version "not revealed";
+  empty-zones-enable yes;
+
+  forwarders {
+  	 8.8.8.8;
+     1.1.1.1;
+  };
+
+};

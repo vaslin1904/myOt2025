@@ -1,0 +1,27 @@
+---
+- name: Create dir sites-available
+  file:
+    path: /etc/angie/{{ item }}
+    state: directory
+  loop:
+    - sites-available
+    - sites-enabled
+
+- name: Настройка конфигурации angie
+  template:
+    src: "template/web/angie/{{ item.src }}"
+    dest: "/etc/{{ item.dest }}"
+    mode: '0644'
+  loop:
+    - {src: "site.conf.j2", dest: "angie/sites-available/my.linuxpro"}
+    - {src: "ang.conf.j2", dest: "angie/angie.conf"}
+
+- name: Активируем конфигурацию angie
+  file:
+    src: "/etc/angie/sites-available/my.linuxpro"
+    dest: "/etc/angie/sites-enabled/my.linuxpro"
+    state: link
+  become: true
+
+  notify:
+    - reload_angie

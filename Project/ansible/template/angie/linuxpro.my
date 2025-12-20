@@ -1,23 +1,20 @@
-# Сайт linuxpro.my — reverse proxy для WordPress на web1/web2
-# Поддержка HTTPS, балансировки, health-check
-
 upstream backend {
-    # Балансировка между web1 и web2
-    server 10.10.1.31:80 max_fails=3 fail_timeout=30s;
-    server 10.10.1.32:80 max_fails=3 fail_timeout=30s;
-
+     # Балансировка между web1 и web2
+     server 10.10.1.31 max_fails=3 fail_timeout=30s;
+     server 10.10.1.32 max_fails=3 fail_timeout=30s;
 }
 
 server {
     # Перенаправление HTTP → HTTPS
     listen 80;
-    server_name linuxpro.my lb.linuxpro.my;
+    server_name linuxpro my.linuxpro www.my.linuxpro;
     return 301 https://$host$request_uri;
 }
 
 server {
-    listen 443 ssl http2;
-    server_name linuxpro.my lb.linuxpro.my;
+    listen 443 ssl;
+    http2 on;
+    server_name linuxpro my.linuxpro www.my.linuxpro;
 
     # SSL
     ssl_certificate /etc/angie/ssl/linuxpro.my.crt;
@@ -39,6 +36,9 @@ server {
     # Reverse proxy
     location / {
         proxy_pass http://backend;
+        proxy_redirect off;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

@@ -1,32 +1,36 @@
 ;
-;BIND direct zone linuxpro.my
+; BIND direct zone linuxpro.my
 ;
-$TTL  86400
-@ IN  SOA dnsSrv.linuxpro.my. root.linuxpro.my. (
-                          2711201417 ; Serial
+$TTL  604800
+@ IN SOA dnsSrv.linuxpro. root.linuxpro. (
+                          2025121902 ; Serial
                           3600       ; Refresh (1 hour)
                           600        ; Retry (10 minutes)
                           86400      ; Expire (1 day)
-                          600        ; minimum (10 minutes)
+                          600        ; Minimum TTL (10 minutes)
                           )
 
-            ; NS - Класс записи — Internet
-            ; A-записи - Address (IPv4-адрес)
-@         IN NS   dnsSrv.linuxpro.my.
+; NS - Класс записи — Internet
+@         IN NS   dnsSrv.linuxpro.
+
+; A-записи - Address (IPv4-адрес)
 dnsSrv    IN A    192.168.56.10
-dnsSrv.dmz   IN A    10.10.1.10
+dnsSrv IN A   10.10.1.10
 
-            ; Внешние сервисы (доступны с хоста)
+; Внешние сервисы (доступны с хоста)
 monitor    IN A    192.168.56.90
-backups    IN A    192.168.56.70
 
-            ; Внутренние сервисы (только в DMZ)
-web1.dmz       IN A 10.10.1.31
-web2.dmz       IN A 10.10.1.32
+; Внутренние сервисы (только в DMZ)
+web1       IN A 10.10.1.31
+web2       IN A 10.10.1.32
 db-master      IN A 10.10.1.51
 db-slave       IN A 10.10.1.52
 
-            ; Алиасы (CNAME)
-www         IN CNAME dnsSrv.linuxpro.my
-grafana     IN CNAME monitor.linuxpro.my
-prometheus  IN CNAME monitor.linuxpro.my
+; Используем Round Robin DNS для mydatabase
+my     IN A    10.10.1.31
+my     IN A    10.10.1.32
+
+; Алиасы (CNAME)
+www         IN CNAME dnsSrv.linuxpro
+grafana     IN CNAME monitor.linuxpro
+prometheus  IN CNAME monitor.linuxpro

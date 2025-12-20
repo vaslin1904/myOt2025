@@ -8,15 +8,41 @@
     src: "template/web/wordpress-6.9.tar.gz"
     dest: /tmp/wordpress.tar.gz
 
+- name: Create dir sites-available
+  file:
+    path: "{{ site }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0755
+
 - name: Распаковать WordPress
   unarchive:
     src: /tmp/wordpress.tar.gz
-    dest: /var/www/
+    dest: "{{ site }}"
     remote_src: yes
+    extra_opts: [--strip-components=1]
+
+- name: Удаляем временные файлы
+  file:
+    path: "/tmp/wordpress.tar.gz"
+    state: absent
+
+
+
+# - name: Переименовываем директорию WordPress
+#   command: "mv -n /var/www/html/wordpress/* {{ site }}"
+#   become: true
+
+# - name: Удаляем временные файлы
+#   file:
+#     path: "/var/www/html/wordpress"
+#     state: absent
+#   become: true
 
 - name: Настроить права
   file:
-    path: /var/www/wordpress
+    path: "{{ site }}"
     owner: www-data
     group: www-data
     mode: '0755'

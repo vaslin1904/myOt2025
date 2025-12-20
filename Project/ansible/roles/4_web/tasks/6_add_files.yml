@@ -1,0 +1,13 @@
+---
+-  name: Настройка конфигурации angie
+   template:
+     src: "template/web/site/{{ item }}"
+     dest: "{{ site }}"
+     owner: root
+     group: root
+     mode: '0644'
+   loop:
+     - index.php
+     - scrip.js
+     - style.css
+     - healthz.php

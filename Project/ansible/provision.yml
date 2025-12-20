@@ -17,6 +17,8 @@
 # Настройка DNS and Angie
 # Имеет выход в интернет, подключение всей сети через него
 # Ансибл подключается к машинам из dmz  зоны через него
+
+
 - name: Set server DNS and Angie
   hosts: dnsSrv
   gather_facts: true
