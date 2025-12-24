@@ -1,0 +1,37 @@
+;
+; BIND direct zone linuxpro my.Linuxpro
+;
+$TTL  604800
+@ IN SOA dnsSrv.linuxpro. root.linuxpro. (
+                          2025121907 ; Serial
+                          3600       ; Refresh (1 hour)
+                          600        ; Retry (10 minutes)
+                          86400      ; Expire (1 day)
+                          600        ; Minimum TTL (10 minutes)
+                          )
+
+; NS - Класс записи — Internet
+@         IN NS   dnsSrv.linuxpro.
+
+; A-записи - Address (IPv4-адрес)
+dnsSrv    IN A    192.168.56.10
+dnsSrv IN A   10.10.1.10
+linuxpro. IN A 10.10.1.10
+
+; Внешние сервисы (доступны с хоста)
+monitor    IN A    192.168.56.90
+
+; Внутренние сервисы (только в DMZ)
+web1       IN A 10.10.1.31
+web2       IN A 10.10.1.32
+db-master      IN A 10.10.1.51
+db-slave       IN A 10.10.1.52
+
+; Используем Round Robin DNS для mydatabase
+my.linuxpro.     IN A    10.10.1.31
+my.linuxpro.     IN A    10.10.1.32
+
+; Алиасы (CNAME)
+www         IN CNAME dnsSrv.linuxpro
+grafana     IN CNAME monitor.linuxpro
+prometheus  IN CNAME monitor.linuxpro

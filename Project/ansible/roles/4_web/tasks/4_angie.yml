@@ -6,6 +6,7 @@
   loop:
     - sites-available
     - sites-enabled
+    - snippets
 
 - name: Настройка конфигурации angie
   template:
@@ -16,6 +17,12 @@
     - {src: "site.conf.j2", dest: "angie/sites-available/my.linuxpro"}
     - {src: "ang.conf.j2", dest: "angie/angie.conf"}
 
+- name: Настройка php
+  template:
+    src: "template/web/fastcgi-php.conf.j2"
+    dest: "/etc/angie/snippets/fastcgi-php.conf"
+
+
 - name: Активируем конфигурацию angie
   file:
     src: "/etc/angie/sites-available/my.linuxpro"
@@ -25,3 +32,4 @@
 
   notify:
     - reload_angie
+    - restart_angie

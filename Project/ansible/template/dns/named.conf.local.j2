@@ -1,8 +1,14 @@
 // Описание прямой и обратной зоны
 
+zone "my.linuxpro" {
+    type master;
+    file "/etc/bind/zones/db.my.linuxpro";
+    allow-transfer { none; };
+};
+
 zone "linuxpro" {
     type master;
-    file "/etc/bind/zones/db.linuxpro.my";
+    file "/etc/bind/zones/db.my.linuxpro";
     allow-transfer { none; };
 };
 

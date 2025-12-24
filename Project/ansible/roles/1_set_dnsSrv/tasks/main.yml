@@ -6,8 +6,8 @@
 # - name: SEt resolv
 #   include_tasks: 0_resolve_dns.yml
 
-# - name: Install apt
-#   include_tasks: 2_install.yml
+- name: Install apt
+  include_tasks: 2_install.yml
 # ########
 - name: SEt angie
   include_tasks: 3_set_angie.yml

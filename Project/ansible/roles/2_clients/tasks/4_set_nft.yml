@@ -1,11 +1,15 @@
 ---
+- name: Validate condition result
+  debug:
+     msg: "The condition result is {{ var_group }}"
+     
 - name: Развернуть nftables.conf
   template:
-    src: "template/nft/nft_db.conf.j2"
+    src: "template/nft/nft_{{ var_group }}.conf.j2"
     dest: /etc/nftables.conf
     owner: root
     group: root
     mode: '0600'
-
+  when: var_group in group_names
   notify:
     - restart_nft

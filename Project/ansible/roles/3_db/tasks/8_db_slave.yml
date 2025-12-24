@@ -2,23 +2,23 @@
 - name: stop replica
   mysql_replication:
     mode: stopreplica
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_unix_socket: "{{ unix_socket }}"
   become: yes
 
 - name: Настроить репликацию на slave
   mysql_query:
     query: |
         CHANGE MASTER TO
-        MASTER_HOST = '10.10.1.51',
-        MASTER_USER = 'repl',
+        MASTER_HOST = '{{ ipmaster }}',
+        MASTER_USER = '{{ user_repl }}',
         MASTER_PASSWORD = '{{ mysql_repl_password }}',
-        MASTER_LOG_FILE = 'mysql-bin.000001' ,
-        MASTER_LOG_POS = 3150;
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+        MASTER_LOG_FILE = 'mysql-bin.000002' ,
+        MASTER_LOG_POS = 6622;
+    login_unix_socket: "{{ unix_socket }}"
   become: yes
 
 - name: Запустить репликацию
   mysql_replication:
     mode: startreplica
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_unix_socket: "{{ unix_socket }}"
   become: yes

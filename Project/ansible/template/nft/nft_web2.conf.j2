@@ -1,0 +1,47 @@
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+# Таблица для фильтрации трафика
+table inet filter {
+    chain input {
+        type filter hook input priority 0; policy drop;
+
+        # Разрешить локальный трафик
+        iif "lo" accept
+
+        # Разрешить установленные и связанные соединения
+        ct state established,related accept
+
+        # Разрешить ICMP (ping)
+        ip protocol icmp accept
+
+        # Разрешить SSH только из подсети 10.10.1.0/24
+        ip saddr 10.10.1.0/24 tcp dport 22 accept
+
+        # Разрешить DNS (UDP и TCP),
+        #Разрешить мониторинг (Prometheus и Grafana) из подсети 10.10.1.0/24
+        ip saddr 10.10.1.0/24 udp dport 53 limit rate 20/second burst 30 packets accept
+        ip saddr 10.10.1.0/24 tcp dport { 53, 9100, 9104, 3000 } accept
+
+        # Разрешить HTTP и HTTPS (входящий трафик на веб-сайт)
+        tcp dport { 80, 443 } accept
+
+        # Разрешить MySQL (порт 3306) только для db-master и db-slave
+        ip saddr { 10.10.1.51, 10.10.1.52 } tcp dport 3306 accept
+
+        # Разрешить OSPF (протокол IP 89)
+        ip protocol ospf accept
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+
+        # Разрешить пересылку трафика для OSPF
+        ip protocol ospf accept
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}

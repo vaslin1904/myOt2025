@@ -1,0 +1,14 @@
+---
+mysql_root_password: pass123
+mysql_repl_password: ReplPass456!
+mysql_wp_password: wpPass
+user_repl: repl
+user_wordpress: wp_user
+ipmaster: 10.10.1.51
+ipslave: 10.10.1.52
+unix_socket: /var/run/mysqld/mysqld.sock
+database: wordpress
+name-master: db-master
+site: /var/www/my.linuxpro/html
+user_adm: wp_admin
+adm_pass: admPass

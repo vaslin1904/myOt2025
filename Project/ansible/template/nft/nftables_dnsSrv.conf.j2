@@ -1,15 +1,17 @@
 #!/usr/sbin/nft -f
+
 flush ruleset
 
 table inet filter {
     chain input {
         type filter hook input priority 0; policy drop;
 
+        # Разрешаем локальный трафик
         iif "lo" accept
         ct state established,related accept
         ip protocol icmp accept
 
-        ###  SSH: все источники
+        ### SSH: все источники
         # Vagrant ssh (через NAT port forwarding)
         iifname "enp0s3" tcp dport 22 accept
 
@@ -21,15 +23,11 @@ table inet filter {
 
         ### DNS: из host-only и DMZ
         iifname { "enp0s19", "enp0s8" } \
-          ip saddr { 192.168.56.0/24, 10.10.1.0/24 } \
-          udp dport 53 \
-          limit rate 20/second burst 30 packets accept
-        iifname { "enp0s19", "enp0s8" } \
-          ip saddr { 192.168.56.0/24, 10.10.1.0/24 } \
-          tcp dport 53 accept
+          ip saddr { 192.168.56.0/24, 10.10.1.0/24 } udp dport 53 limit rate 20/second burst 30 packets accept
+        iifname { "enp0s19", "enp0s8" } ip saddr { 192.168.56.0/24, 10.10.1.0/24 } tcp dport 53 accept
 
         ### Angie (HTTPS/HTTP) — только с хоста
-        tcp dport { 80, 443 } accept
+        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } accept
 
         ### Мониторинг
         iifname "enp0s8" ip saddr 10.10.1.0/24 tcp dport 9100 accept   # node_exporter
@@ -60,8 +58,21 @@ table inet filter {
 }
 
 table ip nat {
+    chain prerouting {
+        type nat hook prerouting priority 0; policy accept;
+
+        # Перенаправление HTTP/HTTPS-трафика для linuxpro -> dnsSrv (10.10.1.10)
+        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } dnat to 10.10.1.10
+
+        # Перенаправление HTTP/HTTPS-трафика для my.linuxpro -> web1/web2 (Round Robin)
+        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } dnat to 10.10.1.31
+        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } dnat to 10.10.1.32
+    }
+
     chain postrouting {
         type nat hook postrouting priority 100; policy accept;
+
+        # Маскарадинг для исходящего трафика
         ip saddr 10.10.1.0/24 oifname "enp0s3" masquerade
     }
 }

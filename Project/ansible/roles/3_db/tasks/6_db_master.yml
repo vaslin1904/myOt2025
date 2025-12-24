@@ -2,7 +2,7 @@
 - name: Создать пользователя repl на master
   mysql_query:
     query: |
-      CREATE USER IF NOT EXISTS 'repl'@'10.10.1.52'
+      CREATE USER IF NOT EXISTS '{{ user_repl }}'@'10.10.1.52'
       IDENTIFIED BY '{{ mysql_repl_password }}';
     login_unix_socket: /var/run/mysqld/mysqld.sock
   become: true
@@ -10,7 +10,7 @@
 - name: GRAND SLAVE for repl на master
   mysql_query:
     query: |
-      GRANT REPLICATION SLAVE ON *.* TO 'repl'@'10.10.1.52';
+      GRANT REPLICATION SLAVE ON *.* TO '{{ user_repl }}'@'10.10.1.52';
     login_unix_socket: /var/run/mysqld/mysqld.sock
   become: true
 

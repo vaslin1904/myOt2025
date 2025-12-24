@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>MySQL Admin UI</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .frame { border: 1px solid #ccc; min-height: 200px; margin-top: 10px; }
+    fieldset { margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+
+<h1>MySQL Admin Panel (wordpress @ db-master)</h1>
+
+<!-- 1. Создание/удаление пользователя -->
+<fieldset>
+  <legend>Управление пользователями</legend>
+  <form action="actions/create_user.php" method="post" target="result_frame">
+    Создать: <input type="text" name="username" required placeholder="логин">
+    <input type="password" name="password" required placeholder="пароль">
+    <button type="submit">Создать пользователя</button>
+  </form>
+
+  <form action="actions/delete_user.php" method="post" target="result_frame" style="margin-top:5px;">
+    Удалить: <input type="text" name="username" required placeholder="логин">
+    <button type="submit">Удалить пользователя</button>
+  </form>
+</fieldset>
+
+<!-- 2. Создание/удаление таблицы -->
+<fieldset>
+  <legend> Управление таблицами</legend>
+  <form action="actions/create_table.php" method="post" target="result_frame">
+    Название таблицы: <input type="text" name="table_name" required><br><br>
+    Поля (в формате: <code>id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100)</code>)<br>
+    <textarea name="columns" rows="4" cols="60" required></textarea><br>
+    <button type="submit">Создать таблицу</button>
+  </form>
+
+  <form action="actions/delete_table.php" method="post" target="result_frame" style="margin-top:10px;">
+    Удалить таблицу: <input type="text" name="table_name" required>
+    <button type="submit">Удалить</button>
+  </form>
+</fieldset>
+
+<!-- 3. Просмотр пользователей и их прав -->
+<fieldset>
+  <legend> Список пользователей и привилегий</legend>
+  <form action="actions/list_users.php" method="get" target="result_frame">
+    <button type="submit">Показать всех пользователей и их права</button>
+  </form>
+  <div class="frame">
+    <iframe name="result_frame" width="100%" src="about:blank"></iframe>
+  </div>
+</fieldset>
+
+<!-- 4. Вход под пользователем и просмотр таблиц -->
+<fieldset>
+  <legend>Подключиться как пользователь и посмотреть таблицы</legend>
+  <form action="actions/login_as_user.php" method="post" target="tables_frame">
+    Логин: <input type="text" name="username" required>
+    Пароль: <input type="password" name="password" required>
+    <button type="submit">Войти и показать таблицы</button>
+  </form>
+  <div class="frame">
+    <iframe name="tables_frame" width="100%" src="about:blank"></iframe>
+  </div>
+</fieldset>
+
+<!-- Общий результат выполнения действий -->
+<div class="frame">
+  <iframe name="result_frame" width="100%" height="150" src="about:blank"></iframe>
+</div>
+
+</body>
+</html>

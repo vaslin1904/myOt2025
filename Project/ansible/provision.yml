@@ -1,19 +1,20 @@
 ---
-# #- name: all setting
-#   hosts: dnsSrv
-#   gather_facts: true
-#   become: True
-#
-#   roles:
-#   - 0_installangie
-#
-# - name: all setting
-#   hosts: all
-#   gather_facts: true
-#   become: True
-#
-#   roles:
-#   - 0_set_all
+- name: all setting
+  hosts: dnsSrv
+  gather_facts: true
+  become: True
+
+  roles:
+  - 0_installangie
+
+- name: all setting
+  hosts: all
+  gather_facts: true
+  become: true
+#  tags: allvm
+
+  roles:
+  - 0_set_all
 # Настройка DNS and Angie
 # Имеет выход в интернет, подключение всей сети через него
 # Ансибл подключается к машинам из dmz  зоны через него
@@ -41,28 +42,29 @@
   hosts: db
   gather_facts: true
   become: True
+  vars_files: vars.yml
 
   roles:
   - 3_db
   tags: db
 
 - name: all setting
-  hosts: "web"
+  hosts: web
   gather_facts: true
   become: True
+  tags: wb1
 
   roles:
   - 0_installangie
-  tags: wb1
-
 - name: Set web
   hosts: web
   gather_facts: true
   become: True
+  vars_files: vars.yml
+  tags: wb
 
   roles:
   - 4_web
-  tags: wb
 
 - name: Set monitor with backup
   hosts: monitor

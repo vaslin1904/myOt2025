@@ -2,8 +2,8 @@
   copy:
     content: |
       #!/bin/bash
-      if ! mysqladmin ping -h {{ db_master_ip }} -u {{ db_user }} -p{{ db_password }} --silent; then
-        sed -i 's/{{ db_master_ip }}/{{ db_slave_ip }}/g' /var/www/html/site/wp-config.php
+      if ! mysqladmin ping -h {{ ip_db-master }} -u {{ user_wordpress }} -p {{ mysql_wp_password }} --silent; then
+        sed -i 's/{{ ip_db-master }}/{{ ip_db_slave }}/g' {{ site }}/wp-config.php
       fi
     dest: /usr/local/bin/check-db.sh
     mode: '0755'

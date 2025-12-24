@@ -9,31 +9,50 @@
 - name: ADD BD wordpress
   mysql_query:
     query: |
-      CREATE DATABASE IF NOT EXISTS wordpress
+      CREATE DATABASE IF NOT EXISTS {{ database }}
       CHARACTER SET utf8mb4
       COLLATE utf8mb4_unicode_ci;
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_unix_socket: "{{ unix_socket }}"
   become: yes
 
 - name: Add wpuser for db wordpress
   mysql_query:
     query: |
-      CREATE USER IF NOT EXISTS 'wpuser'@'{{ inventory_hostname }}'
+      CREATE USER IF NOT EXISTS '{{ user_wordpress }}'@'10.10.1.%'
       IDENTIFIED BY '{{ mysql_wp_password }}';
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_unix_socket: "{{ unix_socket }}"
   become: yes
 
 - name: GRAND for  wpuser
   mysql_query:
     query: |
-      GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'%';
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+      GRANT ALL PRIVILEGES ON {{ database }}.* TO '{{ user_wordpress }}'@'10.10.1.%'
+      WITH GRANT OPTION;
+    login_unix_socket: "{{ unix_socket }}"
+  become: yes
+
+- name: Spec GRAND for  wpuser
+  mysql_query:
+    query: "GRANT SELECT ON mysql.* TO '{{ user_wordpress }}'@'10.10.1.%';"
+    login_unix_socket: "{{ unix_socket }}"
+  become: yes
+
+- name: Spec GRAND2 for  wpuser
+  mysql_query:
+    query: "GRANT CREATE USER, RELOAD, PROCESS ON *.* TO '{{ user_wordpress }}'@'10.10.1.%';"
+    login_unix_socket: "{{ unix_socket }}"
+  become: yes
+
+- name: Spec GRAND3 for  wpuser
+  mysql_query:
+    query: "GRANT GRANT OPTION ON {{ database }}.* TO '{{ user_wordpress }}'@'10.10.1.%';"
+    login_unix_socket: "{{ unix_socket }}"
   become: yes
 
 - name: Add wpuser for db wordpress
   mysql_query:
     query: "FLUSH PRIVILEGES;"
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_unix_socket: "{{ unix_socket }}"
   become: yes
 
 # - name: Пользователь

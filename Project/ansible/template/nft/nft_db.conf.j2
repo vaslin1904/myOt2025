@@ -1,4 +1,5 @@
 #!/usr/sbin/nft -f
+
 flush ruleset
 
 table inet filter {
@@ -14,19 +15,21 @@ table inet filter {
         # ICMP (ping)
         ip protocol icmp accept
 
-        ### SSH
-        # Разрешаем с internal-интерфейса (enp0s8) из подсети DMZ
-        iifname "enp0s8" ip saddr 10.10.1.0/24 tcp dport 22 accept
+        # Разрешаем HTTP/HTTPS только из подсети 10.10.1.0/24
+        ip saddr 10.10.1.0/24 tcp dport { 80, 443 } accept
 
-        ### DNS — только от dnsSrv
-        iifname "enp0s8" ip saddr 10.10.1.10 udp dport 53 accept
-        iifname "enp0s8" ip saddr 10.10.1.10 tcp dport 53 accept
+        # SSH — только из подсети DMZ
+        ip saddr 10.10.1.0/24 tcp dport 22 accept
 
-        ### MySQL — только из DMZ
-        iifname "enp0s8" ip saddr 10.10.1.0/24 tcp dport 3306 accept
+        # Мониторинг — Prometheus → mysqld_exporter
+        ip saddr 10.10.1.0/24 tcp dport { 9100, 9104 } accept
 
-        ### Мониторинг — Prometheus → mysqld_exporter
-        iifname "enp0s8" ip saddr 10.10.1.0/24 tcp dport 9104 accept
+        # MySQL — только из подсети DMZ
+        ip saddr 10.10.1.0/24 tcp dport 3306 accept
+
+        # DNS — только от dnsSrv
+        ip saddr 10.10.1.10 udp dport 53 accept
+        ip saddr 10.10.1.10 tcp dport 53 accept
     }
 
     chain forward {

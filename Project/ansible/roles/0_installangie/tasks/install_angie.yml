@@ -1,16 +1,4 @@
 ---
-- name: Конфигурация TLS сертификата
-  template:
-    src: "template/angie/{{ item }}"
-    dest: "/etc/angie/ssl/"
-    owner: root
-    group: bind
-    mode: '0644'
-  when: inventory_hostname == 'dnsSrv'
-  loop:
-    - linuxpro.my.crt
-    - linuxpro.my.key
-
 - name: Add Angie repository key
   ansible.builtin.get_url:
     url: "https://angie.software/keys/angie-signing.gpg"
@@ -35,3 +23,15 @@
     - angie
     - angie-module-zstd
     - angie-module-brotli
+
+- name: Конфигурация TLS сертификата
+  template:
+    src: "template/angie/{{ item }}"
+    dest: "/etc/angie/ssl/"
+    owner: root
+    group: bind
+    mode: '0644'
+  when: inventory_hostname == 'dnsSrv'
+  loop:
+    - my.linuxpro.crt
+    - my.linuxpro.key

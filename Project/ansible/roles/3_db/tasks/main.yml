@@ -1,12 +1,12 @@
 ---
-# - name: install MySql
-#   include_tasks: 1_install_mySql.yml
+- name: install MySql
+  include_tasks: 1_install_mySql.yml
+#
+- name: Add password
+  include_tasks: 2_add_pass.yml
 # #
-# - name: Add password
-#   include_tasks: 2_add_pass.yml
-# # #
-# - name: SEt MySql
-#   include_tasks: 3_set_dbMySql.yml
+- name: SEt MySql
+  include_tasks: 3_set_dbMySql.yml
 
  # - name: Change socket auth
  #   include_tasks: 4_addPpassSocket.yml
@@ -14,12 +14,15 @@
 # - name: SEt root@127.0.0.1
 #   include_tasks: 5_set_root.yml
 
-# - name: Set db-master
-#   import_tasks: 6_db_master.yml
-#   when: inventory_hostname == 'db-master'
-#
-# - name: Set WordPress
-#   import_tasks: 7_set_dbwordpress.yml
+- name: Set db-master
+  import_tasks: 6_db_master.yml
+  when: inventory_hostname == 'db-master'
+
+- name: Set WordPress
+  import_tasks: 6_set_nft.yml
+
+- name: Set WordPress2
+  import_tasks: 7_set_dbwordpress.yml
 #репликация двоичного файла журнала на основе позиции
 - name: Set slave
   import_tasks: 8_db_slave.yml

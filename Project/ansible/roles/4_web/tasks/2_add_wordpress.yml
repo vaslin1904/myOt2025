@@ -28,22 +28,8 @@
     path: "/tmp/wordpress.tar.gz"
     state: absent
 
-
-
-# - name: Переименовываем директорию WordPress
-#   command: "mv -n /var/www/html/wordpress/* {{ site }}"
-#   become: true
-
 # - name: Удаляем временные файлы
 #   file:
 #     path: "/var/www/html/wordpress"
 #     state: absent
 #   become: true
-
-- name: Настроить права
-  file:
-    path: "{{ site }}"
-    owner: www-data
-    group: www-data
-    mode: '0755'
-    recurse: yes

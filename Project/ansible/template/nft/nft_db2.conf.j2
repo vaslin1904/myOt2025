@@ -1,0 +1,42 @@
+#!/usr/sbin/nft -f
+flush ruleset
+
+table inet filter {
+    chain input {
+        type filter hook input priority 0; policy drop;
+
+        # Loopback — всегда разрешаем
+        iif "lo" accept
+
+        # Установленные соединения — критично для ответов
+        ct state established,related accept
+
+        # ICMP (ping)
+        ip protocol icmp accept
+        tcp dport { 80, 443 } accept
+        iifname "enp0s8" ip saddr 10.10.1.0/24 tcp accept
+        ### SSH
+        # Разрешаем с internal-интерфейса (enp0s8) из подсети DMZ
+       ip saddr 10.10.1.0/24 tcp dport { 22, 9104, 9100, 3306 } accept
+
+        ### DNS — только от dnsSrv
+       ip saddr 10.10.1.10 udp dport 53 accept
+       ip saddr 10.10.1.10 tcp dport 53 accept
+
+        ### MySQL — только из DMZ
+
+      #  ip saddr 10.10.1.0/24 tcp dport 3306 accept
+
+        ### Мониторинг — Prometheus → mysqld_exporter
+      #  ip saddr 10.10.1.0/24 tcp dport 9104 accept
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+        # Внутренние ВМ не маршрутизируют — оставляем пустым
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}

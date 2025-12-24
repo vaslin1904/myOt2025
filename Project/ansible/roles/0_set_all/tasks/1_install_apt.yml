@@ -1,7 +1,11 @@
 ---
-# - name: update apt cache
-#   apt:
-#    update_cache: yes
+- name: sinhronisade
+  shell: "timedatectl set-ntp true"
+  become: true
+  
+- name: update apt cache
+  apt:
+   update_cache: yes
 
 - name: Install packages
   apt:

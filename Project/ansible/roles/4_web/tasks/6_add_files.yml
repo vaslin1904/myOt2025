@@ -1,13 +1,24 @@
 ---
--  name: Настройка конфигурации angie
-   template:
-     src: "template/web/site/{{ item }}"
-     dest: "{{ site }}"
-     owner: root
-     group: root
+-  name: Add  files
+   copy:
+     src: "template/web/site/"
+     dest: "{{ site }}/"
+     owner: www-data
+     group: www-data
      mode: '0644'
-   loop:
-     - index.php
-     - scrip.js
-     - style.css
-     - healthz.php
+   become: true
+   # loop:
+   #   - scrip.js
+   #   - style.css
+   #   - healthz.php
+- name: Validate condition result
+  debug:
+     msg: "The condition result is {{ site }}"
+
+-  name: Add  index.php
+   template:
+     src:  "template/web/site/index.php.j2"
+     dest: "{{ site }}/index.php"
+     owner: www-data
+     group: www-data
+     mode: '0644'
