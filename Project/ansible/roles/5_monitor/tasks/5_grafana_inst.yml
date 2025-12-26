@@ -53,6 +53,7 @@
   loop:
     - { src: "grafana_datasource.yml.j2", dest: "provisioning/datasources/datasource.yml"}
     - { src: "grafana.ini.j2", dest: "grafana.ini" }
+    - { src: "my.json", dest: "provisioning/dashboards" }
   notify:
     - start_grafana
     - restart_grafana

@@ -19,5 +19,5 @@
 # - name: SEt dinamic route
 #   include_tasks: 5_set_frr.yml
 #
-# - name: set nftables
-#   include_tasks: 6_set_nft.yml
+- name: set nftables
+  include_tasks: 6_set_nft.yml

@@ -3,7 +3,7 @@ flush ruleset
 
 table inet filter {
     chain input {
-        type filter hook input priority 0; policy drop;
+        type filter hook input priority 0; policy accept;
 
         # Разрешаем loopback
         iif "lo" accept
@@ -14,19 +14,20 @@ table inet filter {
         # ICMP (ping)
         ip protocol icmp accept
         ip protocol ospf accept
-        
+
         # Разрешаем HTTP/HTTPS (для Grafana и Prometheus)
-        ip saddr 192.168.56.0/24 tcp dport { 3000, 9090, 9000 } accept
+        ip saddr 192.168.56.0/24 tcp dport { 3000, 9090, 9100 } accept
+        # Разрешаем входящие метрики Node Exporter
+        ip saddr 10.10.1.0/24 tcp dport 9100 accept
 
         # Разрешаем SSH
         ip saddr 192.168.56.0/24 tcp dport 22 accept
 
-        # Разрешаем входящие метрики Node Exporter
-        ip saddr 10.10.1.0/24 tcp dport 9100 accept
+
     }
 
     chain forward {
-        type filter hook forward priority 0; policy drop;
+        type filter hook forward priority 0; policy accept;
     }
 
     chain output {

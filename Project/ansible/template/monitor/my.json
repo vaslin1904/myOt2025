@@ -1,0 +1,140 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "custom_dashboard",
+    "title": "System Monitoring Dashboard",
+    "tags": [],
+    "timezone": "browser",
+    "panels": [
+      {
+        "type": "table",
+        "title": "VM Status",
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "up{job=\"myVM\"}",
+            "format": "table",
+            "instant": true,
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "showHeader": true,
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"],
+            "fields": ""
+          }
+        }
+      },
+      {
+        "type": "stat",
+        "title": "Database Uptime",
+        "gridPos": { "x": 12, "y": 0, "w": 6, "h": 8 },
+        "targets": [
+          {
+            "expr": "mysql_global_status_uptime",
+            "format": "time_series",
+            "instant": false,
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"],
+            "fields": ""
+          }
+        }
+      },
+      {
+        "type": "singlestat",
+        "title": "Active Web Server",
+        "gridPos": { "x": 18, "y": 0, "w": 6, "h": 8 },
+        "targets": [
+          {
+            "expr": "probe_success{instance=~\"web1|web2\"}",
+            "format": "time_series",
+            "instant": false,
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"],
+            "fields": ""
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "type": "value",
+                "options": {
+                  "1": { "text": "Active", "color": "green" },
+                  "0": { "text": "Inactive", "color": "red" }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "type": "timeseries",
+        "title": "DNS Traffic",
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "rate(node_network_receive_bytes_total{instance=\"dnsSrv\"}[5m])",
+            "legendFormat": "Incoming Traffic",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(node_network_transmit_bytes_total{instance=\"dnsSrv\"}[5m])",
+            "legendFormat": "Outgoing Traffic",
+            "refId": "B"
+          }
+        ],
+        "options": {
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        }
+      },
+      {
+        "type": "table",
+        "title": "Alerts",
+        "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "ALERTS{alertstate=\"firing\"}",
+            "format": "table",
+            "instant": true,
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "showHeader": true,
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"],
+            "fields": ""
+          }
+        }
+      }
+    ],
+    "schemaVersion": 37,
+    "version": 1
+  },
+  "overwrite": true
+}

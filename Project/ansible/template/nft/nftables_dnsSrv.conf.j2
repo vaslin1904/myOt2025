@@ -5,35 +5,47 @@ table inet filter {
     chain input {
         type filter hook input priority 0; policy drop;
 
+        # Разрешаем loopback
         iif "lo" accept
+
+        # Установленные соединения
         ct state established,related accept
+
+        # ICMP (ping) и OSPF
         ip protocol icmp accept
         ip protocol ospf accept
 
-        ###  SSH: все источники
+        ### SSH
         # Vagrant ssh (через NAT port forwarding)
         iifname "enp0s3" tcp dport 22 accept
 
         # Хост → dnsSrv (host-only)
         iifname "enp0s19" ip saddr 192.168.56.1 tcp dport 22 accept
-        iifname "enp0s3" tcp dport 22 accept
-            # DMZ → dnsSrv
+
+        # DMZ → dnsSrv
         iifname "enp0s8" ip saddr 10.10.1.0/24 tcp dport 22 accept
 
-        ### DNS: из host-only и DMZ
+        ### DNS
+        # DNS (UDP и TCP) — из host-only и DMZ
         iifname { "enp0s19", "enp0s8" } \
-          ip saddr { 192.168.56.0/24, 10.10.1.0/24 }  udp dport 53  limit rate 20/second burst 30 packets accept
-        iifname { "enp0s19", "enp0s8" } ip saddr { 192.168.56.0/24, 10.10.1.0/24 } \
-          tcp dport 53 accept
+          ip saddr { 192.168.56.0/24, 10.10.1.0/24 } udp dport 53 limit rate 20/second burst 30 packets accept
+        iifname { "enp0s19", "enp0s8" } \
+          ip saddr { 192.168.56.0/24, 10.10.1.0/24 } tcp dport 53 accept
 
-        ### Angie (HTTPS/HTTP) — только с хоста
-        tcp dport { 80, 443 } accept
+        ### Веб-сервер (HTTP/HTTPS)
+        # Только с хоста
+        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } accept
 
         ### Мониторинг
-        iifname "enp0s8" ip saddr 10.10.1.0/24 tcp dport { 9100, 9090, 9000 } accept   # node_exporter
-        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 3000, 9100, 9000, 9090 } accept  # Grafana (jump)
+        # Node Exporter и Prometheus
+        iifname "enp0s8" ip saddr 10.10.1.0/24 tcp dport { 9100, 9090 } accept
+        iifname "enp0s19" ip saddr 192.168.56.90 tcp dport { 9100, 9090 } accept
 
-        ### MySQL (DMZ only)
+        # Grafana
+        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport 3000 accept
+
+        ### MySQL
+        # Только из DMZ
         iifname "enp0s8" ip saddr 10.10.1.0/24 tcp dport 3306 accept
     }
 
@@ -44,13 +56,8 @@ table inet filter {
         ip saddr 10.10.1.0/24 oifname "enp0s3" accept
         ip saddr 10.10.1.0/24 oifname "enp0s19" accept
 
-        # Транзитный трафик из enp0s19 в enp0s8
-        iifname "enp0s19" oifname "enp0s8" accept
-        
-        # Jump: хост → web/Grafana (через Angie или напрямую)
-        iifname "enp0s19" ip saddr 192.168.56.1 oifname "enp0s8" ip daddr { 10.10.1.31, 10.10.1.32 } tcp dport { 80, 443 } accept
-        iifname "enp0s19" ip saddr 192.168.56.1 oifname "enp0s8" ip daddr { 10.10.1.31, 10.10.1.32, 10.10.1.51, 10.10.1.52 } tcp dport 22 accept
-        iifname "enp0s19" ip saddr 192.168.56.1 oifname "enp0s8" ip daddr 10.10.1.90 tcp dport 3000 accept
+        # Транзитный трафик: enp0s19 → enp0s8
+        iifname "enp0s19" oifname "enp0s8" ip daddr { 10.10.1.31, 10.10.1.32, 10.10.1.51, 10.10.1.52 } tcp dport { 22, 80, 443, 3306 } accept
 
         # Обратный трафик
         ct state established,related accept
@@ -60,10 +67,22 @@ table inet filter {
         type filter hook output priority 0; policy accept;
     }
 }
+table ip nat {
+    chain prerouting {
+        type nat hook prerouting priority 0; policy accept;
 
+        # Перенаправление HTTP/HTTPS-трафика для linuxpro -> dnsSrv (10.10.1.10)
+        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } dnat to 10.10.1.10
+
+        # Перенаправление HTTP/HTTPS-трафика для my.linuxpro -> web1/web2 (Round Robin)
+        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } dnat to 10.10.1.31
+        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } dnat to 10.10.1.32
+    }
 table ip nat {
     chain postrouting {
         type nat hook postrouting priority 100; policy accept;
+
+        # NAT для DMZ → интернет
         ip saddr 10.10.1.0/24 oifname "enp0s3" masquerade
         ip saddr 10.10.1.0/24 oifname "enp0s19" accept
     }

@@ -1,17 +1,27 @@
 ---
-- name: set Exporter
-  template:
+- name: Copy Node Exporter binary and service file
+  copy:
     src: "template/monitor/{{ item.src }}"
     dest: "{{ item.dest }}"
+    mode: "{{ item.mode | default('0644') }}"
   loop:
-    - { src: "node_exporter", dest: "/usr/local/bin/" }
-    - { src: "node_exporter.service", dest: "/etc/systemd/system/" }
+    - { src: "node_exporter", dest: "/usr/local/bin/node_exporter", mode: '0755' }
+    - { src: "node_exporter.service", dest: "/etc/systemd/system/node_exporter.service" }
 
-- name: add user node_exporter
-  shell: "{{ items }}"
-  become: true
-  loop:
-    - useradd -rs /bin/false node_exporter
-    - systemctl daemon-reload
-  notify:
-    - start_exporter
+- name: Create node_exporter user
+  user:
+    name: node_exporter
+    shell: /bin/false
+    system: yes
+    create_home: no
+
+- name: Reload systemd to apply changes
+  systemd:
+    daemon_reload: yes
+
+- name: Reload systemd and start Node Exporter
+  systemd:
+    name: node_exporter
+    daemon_reload: yes
+    enabled: yes
+    state: started

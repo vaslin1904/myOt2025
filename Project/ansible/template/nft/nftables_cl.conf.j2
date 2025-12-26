@@ -4,31 +4,36 @@ flush ruleset
 table inet filter {
     chain input {
         type filter hook input priority 0; policy drop;
+
+        # Разрешаем loopback
         iif "lo" accept
+
+        # Установленные соединения
         ct state established,related accept
+
+        # ICMP (ping)
         ip protocol icmp accept
         ip protocol ospf accept
 
-        # SSH из DMZ и host-only
+        # SSH из DMZ и host-only сетей
         ip saddr { 192.168.56.0/24, 10.10.1.0/24 } tcp dport 22 accept
 
-
-        ip saddr { 192.168.56.0/24, 10.10.1.0/24 } udp dport 53 \
-          limit rate 20/second burst 30 packets accept
+        # DNS (UDP и TCP)
+        ip saddr { 192.168.56.0/24, 10.10.1.0/24 } udp dport 53 limit rate 20/second burst 30 packets accept
         ip saddr { 192.168.56.0/24, 10.10.1.0/24 } tcp dport 53 accept
 
-        # Angie
+        # Веб-сервер (HTTP/HTTPS)
         tcp dport { 80, 443 } accept
 
+        # Мониторинг (Node Exporter)
+        ip saddr { 192.168.56.0/24, 10.10.1.0/24 } tcp dport 9100 accept
 
-        # Мониторинг
-        ip saddr 10.10.1.0/24 tcp dport { 9100, 9090 } accept
-        ip saddr 10.10.1.0/24 tcp dport 3306 accept
-
+        # База данных (MySQL)
+        ip saddr { 192.168.56.0/24, 10.10.1.0/24 } tcp dport 3306 accept
     }
 
     chain forward {
-
+        type filter hook forward priority 0; policy drop;
     }
 
     chain output {
