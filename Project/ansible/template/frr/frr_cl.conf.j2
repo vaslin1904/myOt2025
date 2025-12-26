@@ -1,9 +1,21 @@
 !
-! OSPF для {{ inventory_hostname }}
+! FRR configuration for {{ inventory_hostname }}
+! IP: {{ ansible_host }}
+!
+frr version 9.1
+frr defaults traditional
+hostname {{ inventory_hostname }}
+log syslog informational
+!
+!
+interface enp0s8
+ description To internal network (10.10.1.0/24)
+ ip ospf priority 1
 !
 router ospf
- ospf router-id {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
- network {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}/24 area 0
+ ospf router-id {{ ansible_host }}
+ network 10.10.1.0/24 area 0
+ default-information originate
 !
 line vty
 !

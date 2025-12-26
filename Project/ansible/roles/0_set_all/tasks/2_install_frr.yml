@@ -19,3 +19,21 @@
   loop:
     - frr
     - frr-pythontools
+#включить ospfd
+- name: Удалить строку 'ospfd=no' из /etc/frr/daemons
+  lineinfile:
+    path: /etc/frr/daemons
+    regexp: '^\s*ospfd\s*=\s*no\s*$'
+    state: absent
+  become: yes
+  
+- name: Включение zebra и ospfd
+  lineinfile:
+    path: /etc/frr/daemons
+    regexp: "{{ item }}="
+    line: "{{ item }}=yes"
+    backup: yes
+  loop:
+    - zebra
+    - ospfd
+  become: yes

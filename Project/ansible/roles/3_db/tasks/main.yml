@@ -1,7 +1,7 @@
 ---
 - name: install MySql
   include_tasks: 1_install_mySql.yml
-#
+
 - name: Add password
   include_tasks: 2_add_pass.yml
 # #
@@ -17,9 +17,6 @@
 - name: Set db-master
   import_tasks: 6_db_master.yml
   when: inventory_hostname == 'db-master'
-
-- name: Set WordPress
-  import_tasks: 6_set_nft.yml
 
 - name: Set WordPress2
   import_tasks: 7_set_dbwordpress.yml

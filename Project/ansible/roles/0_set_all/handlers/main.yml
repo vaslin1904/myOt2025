@@ -7,3 +7,9 @@
     name: frr
     enabled: yes
     state: started
+
+- name: start_exporter
+  systemd:
+    name: node_exporter.service
+    enabled: yes
+    state: started

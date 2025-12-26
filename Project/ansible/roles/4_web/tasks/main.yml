@@ -1,17 +1,18 @@
 ---
-# - name: Install app
-#   include_tasks: 1_install_app.yml
-#
-# - name: Install app wordpress
-#   include_tasks: 2_add_wordpress.yml
-#
-# - name: Add connection with db
-#   include_tasks: 3_wpconf.yml
+- name: Install app
+  include_tasks: 1_install_app.yml
 
-# - name: set angie for web
-#   include_tasks: 4_angie.yml
+- name: Install app wordpress
+  include_tasks: 2_add_wordpress.yml
+
+- name: Add connection with db
+  include_tasks: 3_wpconf.yml
+
+- name: set angie for web
+  include_tasks: 4_angie.yml
 
 # - name: set auto switch db
 #   include_tasks: 5_autoswitch_db.yml
-- name: set angie for web
+
+- name: add files
   include_tasks: 6_add_files.yml

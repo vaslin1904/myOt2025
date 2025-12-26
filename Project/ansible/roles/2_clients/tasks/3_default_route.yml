@@ -6,3 +6,7 @@
   - name: Установить default route через dnsSrv
     command: ip route add default via 10.10.1.10 dev enp0s8
   ignore_errors: yes
+
+- name: Disable enp0s3 interface
+  shell: |
+    ip link set enp0s3 down

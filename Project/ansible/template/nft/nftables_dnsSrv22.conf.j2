@@ -1,0 +1,69 @@
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+# Определение переменных (можно использовать map, но для простоты — inline)
+define HOST_ONLY_NET = 192.168.56.0/24
+define HOST_IP = 192.168.56.1
+define INTERNAL_NET = 10.10.1.0/24
+
+table inet filter {
+    chain input {
+        type filter hook input priority 0; policy drop;
+
+        # Базовые правила
+        iif "lo" accept
+        ct state {established, related} accept
+        ip protocol icmp accept
+
+        # SSH только с хоста (192.168.56.1)
+        ip saddr 192.168.56.0/24 tcp dport 22 accept
+
+        # DNS (UDP/TCP 53) — из обеих сетей
+        iifname { "enp0s19", "enp0s8" } udp dport 53 accept
+        iifname { "enp0s19", "enp0s8" } tcp dport 53 accept
+
+        # HTTP/HTTPS — из host-only и internal (если dnsSrv — reverse-proxy)
+        iifname { "enp0s19", "enp0s8" } tcp dport { 80, 443 } accept
+
+        # MySQL — только внутри INTERNAL_NET (если dnsSrv не БД)
+         iifname "enp0s8" ip saddr 10.10.1.0/24 ip daddr 10.10.1.0/24 tcp dport 3306 accept
+
+
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+
+        # Разрешить established/related
+        ct state {established, related} accept
+
+        # Forward: host-only → internal
+        iifname "enp0s19" oifname "enp0s8" ip saddr 192.168.56.0/24 ip daddr 10.10.1.0/24 accept
+
+        # Forward: internal → host-only (ответы)
+        iifname "enp0s8" oifname "enp0s19" ip saddr 10.10.1.0/24 ip daddr 192.168.56.0/24 accept
+        iifname "enp0s8" oifname "enp0s3" accept
+        # (опционально) internal ↔ internal через dnsSrv (если нет прямой L2)
+        # iifname "enp0s8" oifname "enp0s8" ip saddr 10.10.1.0/24 ip daddr 10.10.1.0/24 accept
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+
+        # Запретить исходящую почту (защита от бота)
+        tcp dport { 25, 465, 587 } reject with tcp reset
+    }
+}
+
+table ip nat {
+    chain postrouting {
+        type nat hook postrouting priority 100; policy accept;
+
+        # Masquerade для всего трафика из internal-сети
+        oifname "enp0s8" ip saddr 10.10.1.0/24 masquerade
+
+        # (если нужен NAT в интернет — через enp0s3)
+         oifname "enp0s3" masquerade
+    }
+}

@@ -4,14 +4,16 @@
 #   ansible.builtin.debug:
 #     var: ansible_facts
 
-- name: install default resolv
-  include_tasks: 0_default_resolv.yml
-  when: inventory_hostname == 'dnsSrv'
-
-- name: install apt
-  include_tasks: 1_install_apt.yml
-
-- name: install apt
-  include_tasks: 2_install_frr.yml
+# - name: install default resolv
+#   include_tasks: 0_default_resolv.yml
+#   when: inventory_hostname == 'dnsSrv'
+#
+# - name: install apt
+#   include_tasks: 1_install_apt.yml
+#
+# - name: install frr
+#   include_tasks: 2_install_frr.yml
 #######
+ - name: install frr
+   include_tasks: 3_exporter.yml
 #

@@ -1,0 +1,21 @@
+---
+- name: Отключить IP forwarding (для хоста)
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '0'
+    state: present
+    reload: yes
+  become: yes
+
+#ДНС сервер - собирает машруты всех, через него все попадают в интернет
+- name: Развернуть динамическую машрутизацию
+  template:
+    src: "template/frr/frr_cl.conf.j2"
+    dest: /etc/frr/frr.conf
+    owner: frr
+    group: frr
+    mode: '0640'
+
+  notify:
+    - start_frr
+    - restart_frr

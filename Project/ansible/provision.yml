@@ -1,11 +1,11 @@
 ---
-- name: all setting
-  hosts: dnsSrv
-  gather_facts: true
-  become: True
-
-  roles:
-  - 0_installangie
+# - name: all setting
+#   hosts: dnsSrv
+#   gather_facts: true
+#   become: True
+#
+#   roles:
+#   - 0_installangie
 
 - name: all setting
   hosts: all
@@ -27,7 +27,7 @@
 
   roles:
   - 1_set_dnsSrv
-
+  tags: dns
 #Настройка серверов
 - name: Set servers
   hosts: ipdmz
@@ -36,7 +36,7 @@
 
   roles:
   - 2_clients
-
+  tags: client
 #Настройка серверов
 - name: Set DB
   hosts: db
@@ -48,15 +48,15 @@
   - 3_db
   tags: db
 
-- name: all setting
-  hosts: web
-  gather_facts: true
-  become: True
-  tags: wb1
+# - name: all setting
+#   hosts: web
+#   gather_facts: true
+#   become: True
+#   tags: wb1
+#
+#   roles:
+#   - 0_installangie
 
-  roles:
-  - 0_installangie
-- name: Set web
   hosts: web
   gather_facts: true
   become: True

@@ -1,0 +1,17 @@
+---
+- name: set Exporter
+  template:
+    src: "template/monitor/{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: "node_exporter", dest: "/usr/local/bin/" }
+    - { src: "node_exporter.service", dest: "/etc/systemd/system/" }
+
+- name: add user node_exporter
+  shell: "{{ items }}"
+  become: true
+  loop:
+    - useradd -rs /bin/false node_exporter
+    - systemctl daemon-reload
+  notify:
+    - start_exporter

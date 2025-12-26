@@ -1,0 +1,20 @@
+---
+- name: Set frr
+  template:
+    src: template/frr/frr_monitor.conf.j2
+    dest: /etc/frr/frr.conf
+    owner: frr
+    group: frr
+    mode: '0640'
+
+# - name: Установка прав на vtysh (для доступа к CLI)
+#   file:
+#     path: /etc/frr/vtysh.conf
+#     state: touch
+#     owner: frr
+#     group: frr
+#     mode: '0640'
+
+  notify:
+    - start_frr
+    - restart_frr

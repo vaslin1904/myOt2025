@@ -19,7 +19,7 @@ dnsSrv IN A   10.10.1.10
 linuxpro. IN A 10.10.1.10
 
 ; Внешние сервисы (доступны с хоста)
-monitor    IN A    192.168.56.90
+monitor.linuxpro.    IN A    192.168.56.90
 
 ; Внутренние сервисы (только в DMZ)
 web1       IN A 10.10.1.31
@@ -32,6 +32,6 @@ my.linuxpro.     IN A    10.10.1.31
 my.linuxpro.     IN A    10.10.1.32
 
 ; Алиасы (CNAME)
-www         IN CNAME dnsSrv.linuxpro
-grafana     IN CNAME monitor.linuxpro
-prometheus  IN CNAME monitor.linuxpro
+www         IN CNAME dnsSrv.linuxpro.
+grafana     IN CNAME monitor.linuxpro.
+prometheus  IN CNAME monitor.linuxpro.

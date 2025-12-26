@@ -6,18 +6,18 @@
 # - name: SEt resolv
 #   include_tasks: 0_resolve_dns.yml
 
-- name: Install apt
-  include_tasks: 2_install.yml
-# ########
-- name: SEt angie
-  include_tasks: 3_set_angie.yml
-
+# - name: Install apt
+#   include_tasks: 2_install.yml
+# # ########
+# - name: SEt angie
+#   include_tasks: 3_set_angie.yml
+#
 - name: Set DNS conf
   include_tasks: 4_set_conf_bind.yml
 ########
 ######
-- name: SEt dinamic route
-  include_tasks: 5_set_frr.yml
-
-- name: set nftables
-  include_tasks: 6_set_nft.yml
+# - name: SEt dinamic route
+#   include_tasks: 5_set_frr.yml
+#
+# - name: set nftables
+#   include_tasks: 6_set_nft.yml

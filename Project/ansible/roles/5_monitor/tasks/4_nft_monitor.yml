@@ -1,0 +1,11 @@
+---
+- name: Развернуть nftables.conf
+  template:
+    src: "template/nft/nftables_monitor.conf.j2"
+    dest: /etc/nftables.conf
+    owner: root
+    group: root
+    mode: '0600'
+
+  notify:
+    - restart_nft

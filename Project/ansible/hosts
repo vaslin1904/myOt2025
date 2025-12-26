@@ -2,7 +2,7 @@
 ansible_user=vagrant
 ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
 [all]
-dnsSrv ansible_host=192.168.56.10 
+dnsSrv ansible_host=192.168.56.10
 db-master ansible_host=10.10.1.51 var_group=db
 db-slave ansible_host=10.10.1.52 var_group=db
 web1 ansible_host=10.10.1.31 var_group=web

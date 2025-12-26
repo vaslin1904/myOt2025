@@ -1,10 +1,26 @@
 !
-   router ospf
-    ospf router-id 10.10.1.10
-    network 10.10.1.0/24 area 0
-    default-information originate always metric 10
-   !
-
-   line vty
-   !
-   end
+! FRR configuration for dnsSrv
+!
+frr version 9.1
+frr defaults traditional
+hostname dnsSrv
+log syslog informational
+!
+!
+interface enp0s8
+ description To 10.10.1.0/24
+ ip ospf priority 1
+!
+interface enp0s19
+ description To Host-only (192.168.56.0/24)
+ ip ospf priority 1
+!
+router ospf
+ ospf router-id 10.10.1.10
+ network 10.10.1.0/24 area 0
+ network 192.168.56.0/24 area 0
+ default-information originate always metric 10
+!
+line vty
+!
+end

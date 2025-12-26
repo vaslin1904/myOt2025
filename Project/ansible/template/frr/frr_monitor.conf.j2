@@ -1,0 +1,18 @@
+!
+!
+frr version "9.1"
+frr defaults traditional
+hostname monitor
+log syslog informational
+!
+interface enp0s19
+ description To dnsSrv (192.168.56.0/24)
+ ip ospf priority 1
+!
+router ospf
+ ospf router-id 192.168.56.90
+ network 192.168.56.0/24 area 0
+!
+line vty
+!
+end

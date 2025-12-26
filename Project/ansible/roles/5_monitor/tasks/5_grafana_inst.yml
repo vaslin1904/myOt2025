@@ -1,0 +1,58 @@
+---
+# - name: Скачать Grafana 12.0.3 с зеркала Tencent
+#   get_url:
+#     url: https://oddler.ru/images/com/soblog/items/2096/grafana-enterprise_10.2.0_amd64.deb
+#     dest: /tmp/grafana_10.2.0_amd64.deb
+#     timeout: 120
+#     mode: '0644'
+#   register: download_result
+#
+# - name: Установить Grafana через dpkg
+#   apt:
+#     deb: /tmp/grafana_10.2.0_amd64.deb
+#     state: present
+#   when: download_result.changed
+
+- name: Запустить и включить службу grafana-server
+  systemd:
+    name: grafana-server
+    state: started
+    enabled: yes
+
+- name: Открыть порт 3000
+  ufw:
+    rule: allow
+    port: 3000
+    proto: tcp
+  ignore_errors: yes
+
+# - name: Удалить временный .deb-файл
+#   file:
+#     path: /tmp/grafana_10.2.0_amd64.deb
+#     state: absent
+#   when: download_result.changed
+
+- name: Создать каталоги
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - /etc/grafana
+    - /etc/grafana/provisioning/datasources
+    - /etc/grafana/provisioning/dashboards
+  become: yes
+
+- name: Скопировать конфиг Grafana
+  template:
+    src: "template/monitor/{{ item.src }}"
+    dest: "/etc/grafana/{{ item.dest }}"
+    mode: '0644'
+  loop:
+    - { src: "grafana_datasource.yml.j2", dest: "provisioning/datasources/datasource.yml"}
+    - { src: "grafana.ini.j2", dest: "grafana.ini" }
+  notify:
+    - start_grafana
+    - restart_grafana

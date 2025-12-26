@@ -1,0 +1,70 @@
+---
+- name: Создать группу prometheus
+  group:
+    name: prometheus
+    system: yes
+
+- name: Создать пользователя prometheus
+  user:
+    name: prometheus
+    system: yes
+    group: prometheus
+    shell: /sbin/nologin
+    home: /var/lib/prometheus
+
+- name: Создать директории для Prometheus
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: '0755'
+  loop:
+    - /etc/prometheus
+    - /var/lib/prometheus
+    - /var/lib/prometheus/data
+
+# - name: Get Prometheus
+#   copy:
+#     src: "template/monitor/prometheus3.8.1.tar.gz"
+#     dest: /tmp/prometheus.tar.gz
+#
+# - name: Unarchive
+#   unarchive:
+#     src: /tmp/prometheus.tar.gz
+#     dest: /tmp/
+#     remote_src: yes
+
+- name:  files
+  copy:
+    src: "template/monitor/prometheus-3.6.0/{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: prometheus
+    group: prometheus
+    mode: '0755'
+  loop:
+    - { src: "promtool", dest: "/usr/local/bin/promtool" }
+    - { src: "prometheus", dest: "/usr/local/bin/prometheus" }
+
+- name:  prometheus.yml
+  template:
+    src: template/monitor/prometheus.yml.j2
+    dest: "/etc/prometheus/prometheus.yml"
+    mode: '0644'
+  become: true
+
+- name:  unit
+  template:
+    src: "template/monitor/prometheus.service.j2"
+    dest: "/etc/systemd/system/prometheus.service"
+    mode: '0644'
+  become: true
+
+- name: Удалить временные файлы
+  file:
+    path: "/tmp/prometheus-3.8.1.linux-amd64.tar.gz"
+    state: absent
+
+  notify:
+    - restart_sys
+    - start_prometheus

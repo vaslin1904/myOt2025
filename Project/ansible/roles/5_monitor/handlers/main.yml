@@ -17,5 +17,28 @@
 - name: start_grafana
   systemd:
     name: grafana-server
+    state: started
+    enabled: yes
+
+- name: restart_grafana
+  systemd:
+    name: grafana-server
     state: restarted
     enabled: yes
+
+- name: start_frr
+  systemd:
+    name: frr
+    enabled: yes
+    state: started
+
+- name: restart_frr
+  systemd:
+    name: frr
+    state: restarted
+
+- name: restart_nft
+  systemd:
+    name: nftables
+    enabled: yes
+    state: restarted

@@ -1,0 +1,34 @@
+##################### Grafana Configuration Example #####################
+#
+# Everything has defaults so you only need to uncomment things you want to
+# change
+
+# ————————————————————————————————————————————————————————————————————————
+#Security & Server
+# ————————————————————————————————————————————————————————————————————————
+[server]
+protocol = http
+http_port = 3000
+domain = monitor.linuxpro
+root_url = %(protocol)s://%(domain)s:%(http_port)s/
+
+# http_addr = 192.168.56.90   ;
+# enable_gzip = true
+
+[security]
+admin_user = admin
+admin_password = admin
+secret_key = {{ grafana_secret_key | default('change_me_in_production') }}
+
+# Data sources & auth
+#
+[auth]
+disable_login_form = false
+disable_signout_menu = false
+
+[auth.anonymous]
+enabled = false   ;
+#
+#  Datasources (автодобавление Prometheus)
+#
+[datasources]
