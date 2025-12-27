@@ -2,21 +2,23 @@
 - name: Add wpadmin for db wordpress
   mysql_query:
     query: |
-      CREATE USER IF NOT EXISTS '{{ user_adm }}'@'10.10.1.%'
+      CREATE USER IF NOT EXISTS '{{ user_adm }}'@'127.0.0.1'
       IDENTIFIED BY '{{ adm_pass }}';
     login_unix_socket: "{{ unix_socket }}"
   become: yes
+  ignore_errors: yes
 
 - name: GRAND for  wpuser
   mysql_query:
     query: |
-      GRANT SELECT PRIVILEGES ON mysql.* TO '{{ user_adm }}'@'10.10.1.%'
-      WITH GRANT OPTION;
+      GRANT ALL PRIVILEGES ON mysql.* TO '{{ user_adm }}'@'127.0.0.1';
     login_unix_socket: "{{ unix_socket }}"
   become: yes
+  ignore_errors: yes
 
 - name: Add wpuser for db wordpress
   mysql_query:
     query: "FLUSH PRIVILEGES;"
     login_unix_socket: "{{ unix_socket }}"
   become: yes
+  ignore_errors: yes

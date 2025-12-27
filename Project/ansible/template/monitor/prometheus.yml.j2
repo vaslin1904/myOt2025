@@ -1,20 +1,67 @@
 global:
-  scrape_interval: 15s
+  scrape_interval: 15s  # Увеличен интервал сбора метрик
+  scrape_timeout: 10s   # Таймаут сбора метрик
 
 scrape_configs:
+  # Prometheus
   - job_name: "prometheus"
     static_configs:
-      - targets: ['localhost:9090']
+      - targets:
+          - 'localhost:9090'
 
+  # Node Exporter
   - job_name: "node_exporter"
     static_configs:
       - targets:
-          - '192.168.56.90:9100'
-          - '10.10.1.10:9100'
-          - '10.10.1.31:9100'
-          - '10.10.1.32:9100'
-          - '10.10.1.51:9100'
-          - '10.10.1.52:9100'
+          - '192.168.56.90:9100'  # monitor
+        labels:
+          instance: 'monitor'
+          role: 'monitoring'
+
+      - targets:
+          - '10.10.1.10:9100'  # dnsSrv
+        labels:
+          instance: 'dnsSrv'
+          role: 'dns'
+
+      - targets:
+          - '10.10.1.31:9100'  # web1
+        labels:
+          instance: 'web1'
+          role: 'web'
+
+      - targets:
+          - '10.10.1.32:9100'  # web2
+        labels:
+          instance: 'web2'
+          role: 'web'
+
+      - targets:
+          - '10.10.1.51:9100'  # db-master
+        labels:
+          instance: 'db-master'
+          role: 'database'
+
+      - targets:
+          - '10.10.1.52:9100'  # db-slave
+        labels:
+          instance: 'db-slave'
+          role: 'database'
+
+  # Grafana
   - job_name: "grafana"
     static_configs:
-      - targets: ['192.168.56.90:3000']
+      - targets:
+          - '192.168.56.90:3000'
+        labels:
+          instance: 'grafana'
+          role: 'monitoring'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - '192.168.56.90:9093'
+
+rule_files:
+  - '/etc/prometheus/alerts.yml'  

@@ -1,0 +1,14 @@
+---
+- name: Copy snmp_exporter
+  copy:
+    src: "template/monitor/{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode | default('0644') }}"
+  become: true
+  loop:
+    - { src: "snmp_exporter", dest: "/usr/local/bin/", mode: '0755' }
+    - { src: "snmp.yml", dest: "/etc/snmp_exporter/" }
+    - { src: "snmp.service", dest: "/etc/systemd/system/" }
+
+  notify:
+    - start_snmp

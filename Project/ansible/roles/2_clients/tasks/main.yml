@@ -2,11 +2,11 @@
 - name: set DNS zone
   include_tasks: 2_resolve.yml
 
-- name: set DNS zone
+- name: set default route
   include_tasks: 3_default_route.yml
-
-- name: Set nftables
-  include_tasks: 4_set_nft.yml
 
 - name: Set frr
   include_tasks: 5_set_frr.yml
+
+- name: Set nftables
+  include_tasks: 4_set_nft.yml

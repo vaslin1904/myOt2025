@@ -1,11 +1,4 @@
 ---
-# - name: БД
-#   mysql_db:
-#     query: |
-#     name: wordpress
-#     state: present
-#   become: true
-
 - name: ADD BD wordpress
   mysql_query:
     query: |
@@ -14,6 +7,7 @@
       COLLATE utf8mb4_unicode_ci;
     login_unix_socket: "{{ unix_socket }}"
   become: yes
+  ignore_errors: yes
 
 - name: Add wpuser for db wordpress
   mysql_query:
@@ -22,6 +16,7 @@
       IDENTIFIED BY '{{ mysql_wp_password }}';
     login_unix_socket: "{{ unix_socket }}"
   become: yes
+  ignore_errors: yes
 
 - name: GRAND for  wpuser
   mysql_query:
@@ -30,36 +25,32 @@
       WITH GRANT OPTION;
     login_unix_socket: "{{ unix_socket }}"
   become: yes
+  ignore_errors: yes
 
 - name: Spec GRAND for  wpuser
   mysql_query:
     query: "GRANT SELECT ON mysql.* TO '{{ user_wordpress }}'@'10.10.1.%';"
     login_unix_socket: "{{ unix_socket }}"
   become: yes
+  ignore_errors: yes
 
-- name: Spec GRAND2 for  wpuser
+- name: Spec GRAND2 for  wp_user
   mysql_query:
     query: "GRANT CREATE USER, RELOAD, PROCESS ON *.* TO '{{ user_wordpress }}'@'10.10.1.%';"
     login_unix_socket: "{{ unix_socket }}"
   become: yes
+  ignore_errors: yes
 
 - name: Spec GRAND3 for  wpuser
   mysql_query:
     query: "GRANT GRANT OPTION ON {{ database }}.* TO '{{ user_wordpress }}'@'10.10.1.%';"
     login_unix_socket: "{{ unix_socket }}"
   become: yes
+  ignore_errors: yes
 
 - name: Add wpuser for db wordpress
   mysql_query:
     query: "FLUSH PRIVILEGES;"
     login_unix_socket: "{{ unix_socket }}"
   become: yes
-
-# - name: Пользователь
-#   mysql_user:
-#     name: wpuser
-#     host: '%'
-#     password: "{{ mysql_wp_password }}"
-#     priv: 'wordpress.*:ALL'
-#     state: present
-#   become: true
+  ignore_errors: yes

@@ -7,8 +7,6 @@
     group: root
     mode: '0644'
   become: true
-  notify:
-    # - restart_mysql
 
 - name: Удаляем анонимных пользователей
   mysql_user:
@@ -26,5 +24,9 @@
     login_unix_socket: /var/run/mysqld/mysqld.sock
   become: true
 
-  notify:
-    - restart_mysql
+- name: restart_mysql
+  systemd:
+    name: mysql
+    state: restarted
+    enabled: yes
+  become: true

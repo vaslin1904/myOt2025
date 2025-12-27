@@ -3,6 +3,7 @@
   file:
     path: /etc/angie/{{ item }}
     state: directory
+  ignore_errors: yes
   loop:
     - sites-available
     - sites-enabled

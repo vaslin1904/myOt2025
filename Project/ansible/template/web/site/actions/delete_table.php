@@ -12,9 +12,9 @@ $response = '';
 
 // --- Валидация имени таблицы ---
 if (empty($table_name)) {
-    $response .= "<p class='error'>❌ Название таблицы обязательно.</p>";
+    $response .= "<p class='error'>Название таблицы обязательно.</p>";
 } elseif (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]{0,63}$/', $table_name)) {
-    $response .= "<p class='error'>❌ Недопустимое имя таблицы. Допустимы: буквы, цифры, подчёркивание (от 1 до 64 символов).</p>";
+    $response .= "<p class='error'>Недопустимое имя таблицы. Допустимы: буквы, цифры, подчёркивание (от 1 до 64 символов).</p>";
 } elseif (in_array(strtolower($table_name), [
     'wp_users', 'wp_posts', 'wp_options', 'wp_comments',
     'users', 'user', 'mysql', 'information_schema', 'performance_schema'
@@ -32,7 +32,7 @@ if (empty($response)) {
         $exists = $stmt->fetchColumn();
 
         if (!$exists) {
-            $response .= "<p class='warning'>🔍 Таблица <code>" . htmlspecialchars($table_name) . "</code> не найдена в базе <code>wordpress</code>.</p>";
+            $response .= "<p class='warning'>Таблица <code>" . htmlspecialchars($table_name) . "</code> не найдена в базе <code>wordpress</code>.</p>";
         }
     } catch (PDOException $e) {
         $response .= "<p class='error'>❌ Ошибка проверки: " . htmlspecialchars($e->getMessage()) . "</p>";

@@ -1,0 +1,19 @@
+---
+- name: Stop MySQL replication
+  community.mysql.mysql_replication:
+    login_user: "{{ user_adm }}"
+    login_password: "{{ adm_pass }}"
+    mode: stopreplica
+  become: true
+
+- name: Reset MySQL replication
+  community.mysql.mysql_replication:
+    login_user: "{{ user_adm }}"
+    login_password: "{{ adm_pass }}"
+    mode: resetreplicaall
+  become: true
+
+- name: Restart MySQL service
+  service:
+    name: mysql
+    state: restarted

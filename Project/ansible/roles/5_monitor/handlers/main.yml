@@ -4,9 +4,11 @@
 
 - name: start_alert
   systemd:
-    name: alertmanager
-    state: started
+    name: "alertmanager.service"
+    daemon_reload: yes
     enabled: yes
+    state: started
+
 
 - name: start_prometheus
   systemd:
@@ -42,3 +44,12 @@
     name: nftables
     enabled: yes
     state: restarted
+
+- name: start_snmp
+  systemd:
+    name: "{{ item }}"
+    daemon_reload: yes
+    enabled: yes
+    state: started
+  loop:
+    - snmp.service

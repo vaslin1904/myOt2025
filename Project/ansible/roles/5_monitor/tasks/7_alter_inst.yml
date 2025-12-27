@@ -1,38 +1,59 @@
 ---
 # Установка Alertmanager
-- name: Скачать Alertmanager
-  get_url:
-    url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz
-    dest: /tmp/alertmanager.tar.gz
+# - name: Скачать Alertmanager
+#   get_url:
+#     url: https://github.com/prometheus/alertmanager/releases/download/v{{ alertmanager_version }}/alertmanager-{{ alertmanager_version }}.linux-amd64.tar.gz
+#     dest: /tmp/alertmanager.tar.gz
+#
+# - name: Распаковать Alertmanager
+#   unarchive:
+#     src: /tmp/alertmanager.tar.gz
+#     dest: /opt/
+#     remote_src: yes
 
-- name: Распаковать Alertmanager
-  unarchive:
-    src: /tmp/alertmanager.tar.gz
-    dest: /opt/
-    remote_src: yes
+- name: Создать пользователя alertmanager
+  user:
+    name: alertmanager
+    system: yes
+    shell: /sbin/nologin
+    home: /var/lib/alertmanager
 
-- name: Создать директорию для Alertmanager
+- name: Создать директорию для Alertmanager (конфиги)
   file:
     path: /etc/alertmanager
     state: directory
+    owner: alertmanager
+    group: alertmanager
     mode: '0755'
 
-- name: Создать директорию для Alertmanager
+- name: Создать директорию для Alertmanager (данные)
   file:
     path: /var/lib/alertmanager
     state: directory
     mode: '0755'
     owner: alertmanager
     group: alertmanager
-    
-- name: Скопировать конфиг Alertmanager
-  template:
-    src: "template/monitor/{{ item.src }}"
-    dest: "/etc/{{ item.dest }}"
-    mode: '0644'
+
+- name: Copy alertmanager
+  copy:
+    src: "template/monitor/alertmanager/{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode | default('0644') }}"
+  become: true
   loop:
-    - {src: "alertmanager.yml.j2", dest: "alertmanager/alertmanager.yml"}
-    - {src: "alert.service", dest: "systemd/system/alertmanager.service"}
+    - { src: "alertmanager", dest: "/usr/local/bin/", mode: '0755' }
+    - { src: "amtool", dest: "/usr/local/bin/", mode: '0755' }
+    - { src: "alertmanager.yml", dest: "/etc/alertmanager/" }
+    - { src: "alertmanager.service", dest: "/etc/systemd/system/" }
+
+- name: Copy alerts
+  copy:
+    src: "template/monitor/alertmanager/alerts.yml"
+    dest: "/etc/prometheus/"
+    owner: prometheus
+    group: prometheus
+    mode: '0644'
+  become: true
+
   notify:
-    - restart_sys
     - start_alert

@@ -1,8 +1,8 @@
 ---
-- name: Создать пользователя repl на master
+- name: Создать пользователя repl
   mysql_query:
     query: |
-      CREATE USER IF NOT EXISTS '{{ user_repl }}'@'10.10.1.52'
+      CREATE USER IF NOT EXISTS '{{ user_repl }}'@'{{ ipslave }}'
       IDENTIFIED BY '{{ mysql_repl_password }}';
     login_unix_socket: /var/run/mysqld/mysqld.sock
   become: true
@@ -10,7 +10,7 @@
 - name: GRAND SLAVE for repl на master
   mysql_query:
     query: |
-      GRANT REPLICATION SLAVE ON *.* TO '{{ user_repl }}'@'10.10.1.52';
+      GRANT REPLICATION SLAVE ON *.* TO '{{ user_repl }}'@'{{ ipslave }}';
     login_unix_socket: /var/run/mysqld/mysqld.sock
   become: true
 
@@ -19,19 +19,3 @@
     query: "FLUSH PRIVILEGES;"
     login_unix_socket: /var/run/mysqld/mysqld.sock
   become: true
-
-
-# - name: Создать пользователя repl на master
-#   mysql_user:
-#     name: repl
-#     host: '10.10.1.52'
-#     password: "{{ mysql_repl_password }}"
-#     priv: "REPLICATION SLAVE"
-#     state: present
-#     plugin: mysql_native_password
-#     login_unix_socket: /var/run/mysqld/mysqld.sock
-#   become: true
-
-
-#CREATE USER 'replica_user'@'replica_server_ip'
-#IDENTIFIED WITH mysql_native_password BY 'password';

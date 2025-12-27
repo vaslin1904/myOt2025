@@ -1,0 +1,11 @@
+groups:
+- name: vm_availability
+  rules:
+  - alert: VMDown
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "ВМ недоступна: {{$labels.instance}}"
+      description: "{{$labels.instance}} недоступна более 1 минуты."

@@ -22,3 +22,11 @@
      owner: www-data
      group: www-data
      mode: '0644'
+
+-  name: Add  config.php
+   template:
+     src:  "template/web/site/config.php.j2"
+     dest: "{{ site }}/config.php"
+     owner: www-data
+     group: www-data
+     mode: '0644'

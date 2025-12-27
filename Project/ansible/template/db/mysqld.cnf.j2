@@ -12,11 +12,14 @@ skip-networking = Off
 bind-address    = 0.0.0.0
 skip-name-resolve
 
-{% if ansible_hostname == 'db-master' %}
+{% if ansible_hostname == name_master %}
 server-id       = 1
-{% elif ansible_hostname == 'db-slave' %}
+read_only       = OFF
+super_read_only = OFF
+{% elif ansible_hostname == name_slave %}
 server-id       = 2
 read_only       = ON
+super_read_only = ON
 {% endif %}
 
 # Бинарные логи

@@ -15,13 +15,13 @@
     system: yes
     create_home: no
 
-- name: Reload systemd to apply changes
-  systemd:
-    daemon_reload: yes
+- name: Создать директории для snmp_exporter
+  file:
+    path: "/etc/snmp_exporter"
+    state: directory
+    mode: '0755'
 
-- name: Reload systemd and start Node Exporter
-  systemd:
-    name: node_exporter
-    daemon_reload: yes
-    enabled: yes
-    state: started
+
+
+  notify:
+    - start_exp

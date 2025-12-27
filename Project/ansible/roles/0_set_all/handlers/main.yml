@@ -13,3 +13,12 @@
     name: node_exporter.service
     enabled: yes
     state: started
+
+- name: start_exp
+  systemd:
+    name: "{{ item }}"
+    daemon_reload: yes
+    enabled: yes
+    state: started
+  loop:
+    - node_exporter.service

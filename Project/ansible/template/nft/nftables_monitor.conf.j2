@@ -11,23 +11,24 @@ table inet filter {
         # Установленные соединения
         ct state established,related accept
 
-        # ICMP (ping)
+        # ICMP (ping) и OSPF
         ip protocol icmp accept
         ip protocol ospf accept
 
-        # Разрешаем HTTP/HTTPS (для Grafana и Prometheus)
-        ip saddr 192.168.56.0/24 tcp dport { 3000, 9090, 9100 } accept
-        # Разрешаем входящие метрики Node Exporter
-        ip saddr 10.10.1.0/24 tcp dport 9100 accept
+        ### HTTP/HTTPS (для Grafana, Prometheus и SNMP Exporter)
+        # Для хостов в сети 192.168.56.0/24
+        ip saddr 192.168.56.0/24 tcp dport { 3000, 9090, 9100, 9116 } accept
 
-        # Разрешаем SSH
+        # Для хостов в сети 10.10.1.0/24
+        ip saddr 10.10.1.0/24 tcp dport { 9100, 9116, 9090, 3000 } accept
+
+        ### SSH
+        # Разрешаем SSH только из сети 192.168.56.0/24
         ip saddr 192.168.56.0/24 tcp dport 22 accept
-
-
     }
 
     chain forward {
-        type filter hook forward priority 0; policy accept;
+        type filter hook forward priority 0; policy drop;
     }
 
     chain output {

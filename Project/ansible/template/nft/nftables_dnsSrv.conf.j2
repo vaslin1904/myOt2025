@@ -15,6 +15,8 @@ table inet filter {
         ip protocol icmp accept
         ip protocol ospf accept
 
+        iifname "enp0s19" oifname "enp0s8" accept
+        iifname "enp0s8" oifname "enp0s19" accept
         ### SSH
         # Vagrant ssh (через NAT port forwarding)
         iifname "enp0s3" tcp dport 22 accept
@@ -41,6 +43,10 @@ table inet filter {
         iifname "enp0s8" ip saddr 10.10.1.0/24 tcp dport { 9100, 9090 } accept
         iifname "enp0s19" ip saddr 192.168.56.90 tcp dport { 9100, 9090 } accept
 
+        # SNMP Exporter
+        iifname "enp0s8" ip saddr 10.10.1.0/24 tcp dport 9116 accept
+        iifname "enp0s19" ip saddr 192.168.56.90 tcp dport 9116 accept
+
         # Grafana
         iifname "enp0s19" ip saddr 192.168.56.1 tcp dport 3000 accept
 
@@ -57,7 +63,11 @@ table inet filter {
         ip saddr 10.10.1.0/24 oifname "enp0s19" accept
 
         # Транзитный трафик: enp0s19 → enp0s8
-        iifname "enp0s19" oifname "enp0s8" ip daddr { 10.10.1.31, 10.10.1.32, 10.10.1.51, 10.10.1.52 } tcp dport { 22, 80, 443, 3306 } accept
+        iifname "enp0s19" oifname "enp0s8" ip daddr { 10.10.1.31, 10.10.1.32, 10.10.1.51, 10.10.1.52 } tcp dport { 22, 80, 443, 3306, 9100, 9116, 9090 } accept
+
+        # Jump: хост → web/Grafana (через Angie или напрямую)
+        iifname "enp0s19" ip saddr 192.168.56.1 oifname "enp0s8" ip daddr { 10.10.1.31, 10.10.1.32 } tcp dport { 80, 443 } accept
+        iifname "enp0s19" ip saddr 192.168.56.1 oifname "enp0s8" ip daddr { 10.10.1.31, 10.10.1.32, 10.10.1.51, 10.10.1.52 } tcp dport 22 accept
 
         # Обратный трафик
         ct state established,related accept
@@ -67,6 +77,7 @@ table inet filter {
         type filter hook output priority 0; policy accept;
     }
 }
+
 table ip nat {
     chain prerouting {
         type nat hook prerouting priority 0; policy accept;
@@ -74,11 +85,10 @@ table ip nat {
         # Перенаправление HTTP/HTTPS-трафика для linuxpro -> dnsSrv (10.10.1.10)
         iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } dnat to 10.10.1.10
 
-        # Перенаправление HTTP/HTTPS-трафика для my.linuxpro -> web1/web2 (Round Robin)
-        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } dnat to 10.10.1.31
-        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } dnat to 10.10.1.32
+        # Round Robin для my.linuxpro -> web1/web2
+        iifname "enp0s19" ip saddr 192.168.56.1 tcp dport { 80, 443 } dnat to numgen inc mod 2 map { 0 : 10.10.1.31, 1 : 10.10.1.32 }
     }
-table ip nat {
+
     chain postrouting {
         type nat hook postrouting priority 100; policy accept;
 

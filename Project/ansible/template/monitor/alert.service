@@ -7,7 +7,9 @@ After=network-online.target
 User=alertmanager
 Group=alertmanager
 WorkingDirectory=/etc/alertmanager
-ExecStart=/opt/alertmanager-{{ alertmanager_version }}.linux-amd64/alertmanager --config.file=/etc/alertmanager/alertmanager.yml --storage.path=/var/lib/alertmanager
+ExecStart=/usr/local/bin/alertmanager \
+  --config.file=/etc/alertmanager/alertmanager.yml \
+  --storage.path=/var/lib/alertmanager
 Restart=on-failure
 
 [Install]

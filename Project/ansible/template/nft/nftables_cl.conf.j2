@@ -3,7 +3,7 @@ flush ruleset
 
 table inet filter {
     chain input {
-        type filter hook input priority 0; policy drop;
+        type filter hook input priority 0; policy accept;
 
         # Разрешаем loopback
         iif "lo" accept
@@ -27,7 +27,8 @@ table inet filter {
 
         # Мониторинг (Node Exporter)
         ip saddr { 192.168.56.0/24, 10.10.1.0/24 } tcp dport 9100 accept
-
+        # Мониторинг (SNMP Exporter)
+        ip saddr { 192.168.56.0/24, 10.10.1.0/24 } tcp dport 9116 accept
         # База данных (MySQL)
         ip saddr { 192.168.56.0/24, 10.10.1.0/24 } tcp dport 3306 accept
     }
