@@ -16,13 +16,14 @@
 #   when: inventory_hostname == '{{ name_slave }}'
 
 - name: start slave
-  include_tasks: 6_db_master.yml
+  include_tasks: 5_db_master.yml
   when: inventory_hostname == '{{ name_master }}'
 
 - name: start slave
-  include_tasks: 8_db_slave.yml
+  include_tasks: 6_db_slave.yml
   when: inventory_hostname == '{{ name_slave }}'
 
 # - name: start slave
-#   include_tasks: 0_8_change_master.yml
+#   include_tasks: 0_6_change_master.yml
 #   when: inventory_hostname == '{{ name_slave }}'
+
