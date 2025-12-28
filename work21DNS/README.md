@@ -19,4 +19,3 @@ ______________________________________________________________________
 2. Для правильной работы DNS необходимо выставить одинаковое время на всех машинах и настроить resolv.conf:
    [resolv.conf](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/ansible/template/servers-resolv.conf.j2)
 3. 
-ddv
