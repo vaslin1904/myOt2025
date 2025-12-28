@@ -20,6 +20,7 @@ ______________________________________________________________________
    [resolv.conf](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/ansible/template/servers-resolv.conf.j2)
 3. Настройка DNS заключается в описании DNS zone, и их краткое описание в другом конфиге.
    Описание зон: [Зоны сервера](https://github.com/vaslin1904/myOt2025/tree/main/work21DNS/ansible/template/ns01)
-   Проверка зоны на клиенте:
+   Проверка зоны на клиенте web1:
    ![check](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/img/client-1921685610.png)
-   
+   Проверка зоны на клиенте web2:
+   ![check](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/img/client-192.168.56.11.png)
