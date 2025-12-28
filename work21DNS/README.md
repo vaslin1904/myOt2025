@@ -12,6 +12,7 @@
   * клиент2 видит только dns.lab
 ______________________________________________________________________
 # Структура Playbook
+![structura](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/img/Structura.png) </br>
 
 ### Порядок выполнения
 1.Добавляем дополнительную машину "client2"  в vagrant файл.
