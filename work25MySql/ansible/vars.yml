@@ -1,0 +1,13 @@
+---
+mysql_root_password: pass123
+mysql_root: root
+user_adm: root
+user_adm_password: pass123
+mysql_repl_password: ReplPass456!
+user_repl: repl
+ipmaster: 192.168.56.51
+ipslave: 192.168.56.52
+unix_socket: /var/run/mysqld/mysqld.sock
+name_master: db-master
+name_slave: db-slave
+database: bet

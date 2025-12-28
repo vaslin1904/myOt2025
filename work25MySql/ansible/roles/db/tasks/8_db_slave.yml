@@ -1,0 +1,26 @@
+---
+
+- name: stop replica
+  mysql_replication:
+    mode: stopreplica
+    login_unix_socket: "{{ unix_socket }}"
+  become: yes
+  ignore_errors: yes
+
+- name: Настроить репликацию на slave
+  mysql_query:
+    query: |
+        CHANGE MASTER TO
+        MASTER_HOST = '{{ ipmaster }}',
+        MASTER_USER = '{{ user_repl }}',
+        MASTER_PASSWORD = '{{ mysql_repl_password }}',
+        MASTER_LOG_FILE = 'mysql-bin.000012' ,
+        MASTER_LOG_POS = 154;
+    login_unix_socket: "{{ unix_socket }}"
+  become: yes
+
+- name: Запустить репликацию
+  mysql_replication:
+    mode: startreplica
+    login_unix_socket: "{{ unix_socket }}"
+  become: yes

@@ -1,0 +1,28 @@
+---
+# - name: install MySql
+#   include_tasks: 1_install_mySql.yml
+#
+#
+# - name: Add dump and pass
+#   include_tasks: 2_add_dump-pass.yml
+#   when: inventory_hostname == '{{ name_master }}'
+#
+# - name: SEt MySql
+#   include_tasks: 3_set_dbMySql.yml
+#   when: inventory_hostname == '{{ name_master }}'
+#
+# - name: Add  master.sql for slave
+#   include_tasks: 4_add_master.sql.yml
+#   when: inventory_hostname == '{{ name_slave }}'
+
+- name: start slave
+  include_tasks: 6_db_master.yml
+  when: inventory_hostname == '{{ name_master }}'
+
+- name: start slave
+  include_tasks: 8_db_slave.yml
+  when: inventory_hostname == '{{ name_slave }}'
+
+# - name: start slave
+#   include_tasks: 0_8_change_master.yml
+#   when: inventory_hostname == '{{ name_slave }}'

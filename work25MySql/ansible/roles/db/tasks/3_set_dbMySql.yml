@@ -1,0 +1,33 @@
+---
+- name: Удаляем анонимных пользователей
+  mysql_user:
+    name: ""
+    host: "{{ item }}"
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  loop: ["localhost", "{{ ansible_hostname }}"]
+  become: true
+
+- name: Удаляем тестовую БД
+  mysql_db:
+    name: test
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  become: true
+
+- name: ADD BD bet
+  mysql_query:
+    query: |
+      CREATE DATABASE IF NOT EXISTS {{ database }}
+      CHARACTER SET utf8mb4
+      COLLATE utf8mb4_unicode_ci;
+    login_unix_socket: "{{ unix_socket }}"
+  become: yes
+  ignore_errors: yes
+
+- name: restart_mysql
+  systemd:
+    name: mysql
+    state: restarted
+    enabled: yes
+  become: true

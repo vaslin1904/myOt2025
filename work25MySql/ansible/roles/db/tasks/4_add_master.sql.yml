@@ -1,0 +1,10 @@
+---
+- name: add dump
+  template:
+    src: "template/db/{{ item.src }}"
+    dest: "{{ item.dest }}"
+  ignore_errors: yes
+  become: yes
+  loop:
+    - { src: "master.sql", dest: "/tmp/" }
+    - { src: "05-binlog.cnf", dest: "/etc/mysql/conf.d/" }

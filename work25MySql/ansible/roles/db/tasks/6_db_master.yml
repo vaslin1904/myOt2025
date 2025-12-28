@@ -1,0 +1,21 @@
+---
+- name: Создать пользователя repl
+  mysql_query:
+    query: |
+      CREATE USER IF NOT EXISTS '{{ user_repl }}'@'{{ ipslave }}'
+      IDENTIFIED BY '{{ mysql_repl_password }}';
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  become: true
+
+- name: GRAND SLAVE for repl на master
+  mysql_query:
+    query: |
+      GRANT REPLICATION SLAVE ON *.* TO '{{ user_repl }}'@'{{ ipslave }}';
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  become: true
+
+- name: FLASH for repl на master
+  mysql_query:
+    query: "FLUSH PRIVILEGES;"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  become: true

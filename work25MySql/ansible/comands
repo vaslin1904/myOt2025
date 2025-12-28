@@ -1,0 +1,6 @@
+mysql -uroot -p -D bet < /tmp/bet.dmp
+CREATE USER 'repl'@'%' IDENTIFIED BY '!OtusLinux2018';
+SELECT user,host FROM mysql.user where user='repl';
+GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%' IDENTIFIED BY '!OtusLinux2018';
+mysqldump --all-databases --triggers --routines --master-data
+--ignore-table=bet.events_on_demand --ignore-table=bet.v_same_event -uroot -p > master.sql

@@ -1,0 +1,26 @@
+---
+- name: add file with password
+  template:
+    src: "template/db/.my.cnf"
+    dest: "{{ item }}"
+  ignore_errors: yes
+  loop:
+    - /root/.my.cnf
+    - /home/vagrant/.my.cnf
+  become: yes
+
+- name: add dump
+  template:
+    src: "template/db/bet.dmp"
+    dest: "/tmp/"
+  ignore_errors: yes
+  become: yes
+
+- name: Add config MySql
+  template:
+    src: "template/db/mysqld.cnf.j2"
+    dest: /etc/mysql/conf.d/mysql.cnf
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
