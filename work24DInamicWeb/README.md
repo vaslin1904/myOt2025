@@ -1,8 +1,17 @@
-Docker Compose — это инструмент управления многоконтейнерными приложениями.
-Он упрощает разработку, развертывание и тестирование сложных проектов,
- где используются несколько сервисов. Ими могут быть веб-серверы, базы данных,
- приложения и другие компоненты.
-
-В отличие от Docker, который работает с отдельными контейнерами,
-Docker Compose ориентирован на управление несколькими контейнерами одновременно.
-Он описывает их конфигурацию в одном файле — docker-compose.yml
+# Задание
+Создать стенд nginx + php-fpm (laravel/wordpress) + python (flask/django) + js(react/angular)
+vagrant стэнд с проброшенными на локалхост портами
+каждый порт на свой сайт
+через нжинкс
+______________________________________________________________
+Структура работы
+![structura](https://github.com/vaslin1904/myOt2025/blob/main/work24DInamicWeb/image/structura.png)
+______________________________________
+Результат выполнения
+![Docker box](https://github.com/vaslin1904/myOt2025/blob/main/work24DInamicWeb/image/docker_box.png)
+## Django
+![Django](https://github.com/vaslin1904/myOt2025/blob/main/work24DInamicWeb/image/Django_8081.png)
+## Node
+![node](https://github.com/vaslin1904/myOt2025/blob/main/work24DInamicWeb/image/node_8082.png)
+## Wordpress
+![wordpress](https://github.com/vaslin1904/myOt2025/blob/main/work24DInamicWeb/image/wordpress_8083.png)
