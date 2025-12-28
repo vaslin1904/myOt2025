@@ -15,6 +15,7 @@
     dest: "/tmp/"
   ignore_errors: yes
   become: yes
+  when: inventory_hostname == '{{ name_master }}
 
 - name: Add config MySql
   template:
