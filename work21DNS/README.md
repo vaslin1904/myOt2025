@@ -18,4 +18,8 @@ ______________________________________________________________________
 1. Устанавливаем дополнительные пакеты для настройки DNS в роли dop_install: bind, bind-utils
 2. Для правильной работы DNS необходимо выставить одинаковое время на всех машинах и настроить resolv.conf:
    [resolv.conf](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/ansible/template/servers-resolv.conf.j2)
-3. 
+3. Настройка DNS заключается в описании DNS zone, и их краткое описание в другом конфиге.
+   Описание зон: [Зоны сервера](https://github.com/vaslin1904/myOt2025/tree/main/work21DNS/ansible/template/ns01)
+   Проверка зоны на клиенте:
+   ![check](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/img/client-1921685610.png)
+   
