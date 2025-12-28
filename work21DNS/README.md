@@ -24,3 +24,18 @@ ______________________________________________________________________
    ![check](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/img/client-1921685610.png)
    Проверка зоны на клиенте web2:
    ![check](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/img/client-192.168.56.11.png)
+________________________________________________________________________________________
+####  Настройка Split-DNS </br>
+Split DNS (разделенный DNS, split-horizon DNS, split-brain DNS) — это конфигурация системы доменных имён (DNS), </br> 
+которая позволяет отправлять разные DNS-ответы для одного и того же доменного имени в зависимости от местоположения запрашивающего. 
+Распределение видимых зон для клиента.
+Отличие настройки от простого DNS состоит в добаление конфига с кратким описания зон блок **view**
+[master named split](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/ansible/template/ns01/master-named_split.conf)
+[slave named split](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/ansible/template/ns02/slave-named_split.conf)
+Проверка конфигов осуществляется утилитой **named-checkconf**
+#### Клиент web1 видит запись web1.dns.lab, записи домена newdns.lab
+![split web1](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/img/client%20split.png)
+#### Клиент web2 видит web1.dns.labб web2.dns.lab
+![split web2](https://github.com/vaslin1904/myOt2025/blob/main/work21DNS/img/client2%20split.png)
+
+
